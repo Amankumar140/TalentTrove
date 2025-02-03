@@ -1,0 +1,56 @@
+# Root .gitignore for TalentTrove
+
+# Dependencies
+node_modules/
+
+# Environment variables (never commit these!)
+.env
+.env.local
+.env.production
+
+# Build outputs
+dist/
+build/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor directories
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Python (backend)
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+venv/
+env/
+.venv/
+.env/
+*.egg-info/
+.eggs/
+site-packages/
+
+# Python testing & coverage
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# Misc / programmer tools
+*.swp
+*.swo
+*~
+.cache/
+tmp/
+temp/

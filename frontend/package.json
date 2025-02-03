@@ -1,0 +1,11 @@
+{
+  "name": "talentrove-frontend",
+  "version": "1.0.0",
+  "description": "TalentTrove frontend workspace",
+  "scripts": {
+    "dev": "cd client && npm run dev",
+    "build": "cd client && npm run build",
+    "install": "cd client && npm install",
+    "preview": "cd client && npm run preview"
+  }
+}
