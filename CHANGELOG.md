@@ -10,3 +10,6 @@ Initialize package.json for server and frontend
 
 ## 2025-02-02T16:30:00
 Configure ESLint and Prettier for code consistency
+
+## 2025-02-04T09:45:00
+Add Express middleware: cors, morgan, bodyParser
