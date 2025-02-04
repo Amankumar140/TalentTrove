@@ -13,3 +13,6 @@ Configure ESLint and Prettier for code consistency
 
 ## 2025-02-04T09:45:00
 Add Express middleware: cors, morgan, bodyParser
+
+## 2025-02-04T15:10:00
+Create user schema with role-based fields (client/freelancer)
