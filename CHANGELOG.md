@@ -16,3 +16,6 @@ Add Express middleware: cors, morgan, bodyParser
 
 ## 2025-02-04T15:10:00
 Create user schema with role-based fields (client/freelancer)
+
+## 2025-02-05T11:00:00
+Add password hashing with bcrypt on user registration
