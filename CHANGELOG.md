@@ -19,3 +19,6 @@ Create user schema with role-based fields (client/freelancer)
 
 ## 2025-02-05T11:00:00
 Add password hashing with bcrypt on user registration
+
+## 2025-02-06T09:30:00
+Implement login route with token expiry handling
