@@ -22,3 +22,6 @@ Add password hashing with bcrypt on user registration
 
 ## 2025-02-06T09:30:00
 Implement login route with token expiry handling
+
+## 2025-02-06T14:50:00
+Add auth middleware to protect private routes
