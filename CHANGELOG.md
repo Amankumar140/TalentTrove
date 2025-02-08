@@ -28,3 +28,6 @@ Add auth middleware to protect private routes
 
 ## 2025-02-07T10:20:00
 Create project schema: title, budget, deadline, skills
+
+## 2025-02-08T09:00:00
+Add POST /projects route for clients to post jobs
