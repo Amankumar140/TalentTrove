@@ -31,3 +31,6 @@ Create project schema: title, budget, deadline, skills
 
 ## 2025-02-08T09:00:00
 Add POST /projects route for clients to post jobs
+
+## 2025-02-08T13:40:00
+Add GET /projects route with filters and search
