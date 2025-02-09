@@ -37,3 +37,6 @@ Add GET /projects route with filters and search
 
 ## 2025-02-09T10:15:00
 Setup Vite + React app with JSX support
+
+## 2025-02-09T15:00:00
+Add React Router with protected route wrapper
