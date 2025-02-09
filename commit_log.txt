@@ -1,2 +1,3 @@
 [2025-02-05T14:30:00] Add base Express server with API routes
 [2025-02-07T11:00:00] Setup MongoDB connection and user model
+[2025-02-09T16:45:00] Implement JWT authentication (register and login)
