@@ -34,3 +34,6 @@ Add POST /projects route for clients to post jobs
 
 ## 2025-02-08T13:40:00
 Add GET /projects route with filters and search
+
+## 2025-02-09T10:15:00
+Setup Vite + React app with JSX support
