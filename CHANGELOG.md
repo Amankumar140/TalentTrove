@@ -43,3 +43,6 @@ Add React Router with protected route wrapper
 
 ## 2025-02-10T09:50:00
 Build Login and Register pages with form validation
+
+## 2025-02-10T14:30:00
+Add Axios instance with JWT interceptor for API calls
