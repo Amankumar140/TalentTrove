@@ -40,3 +40,6 @@ Setup Vite + React app with JSX support
 
 ## 2025-02-09T15:00:00
 Add React Router with protected route wrapper
+
+## 2025-02-10T09:50:00
+Build Login and Register pages with form validation
