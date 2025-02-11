@@ -49,3 +49,6 @@ Add Axios instance with JWT interceptor for API calls
 
 ## 2025-02-11T10:00:00
 Build freelancer dashboard with project listing
+
+## 2025-02-11T16:00:00
+Build client dashboard with posted projects overview
