@@ -52,3 +52,6 @@ Build freelancer dashboard with project listing
 
 ## 2025-02-11T16:00:00
 Build client dashboard with posted projects overview
+
+## 2025-02-12T09:30:00
+Add proposal/bid schema: freelancer, project, amount, message
