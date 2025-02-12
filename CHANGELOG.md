@@ -55,3 +55,6 @@ Build client dashboard with posted projects overview
 
 ## 2025-02-12T09:30:00
 Add proposal/bid schema: freelancer, project, amount, message
+
+## 2025-02-12T14:00:00
+Add POST /proposals route for freelancers to bid
