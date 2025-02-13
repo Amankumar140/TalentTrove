@@ -58,3 +58,6 @@ Add proposal/bid schema: freelancer, project, amount, message
 
 ## 2025-02-12T14:00:00
 Add POST /proposals route for freelancers to bid
+
+## 2025-02-13T09:10:00
+Add GET /proposals/:projectId for clients to review bids
