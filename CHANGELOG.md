@@ -61,3 +61,6 @@ Add POST /proposals route for freelancers to bid
 
 ## 2025-02-13T09:10:00
 Add GET /proposals/:projectId for clients to review bids
+
+## 2025-02-13T15:30:00
+Build proposal submission form on frontend
