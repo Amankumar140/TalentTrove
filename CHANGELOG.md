@@ -64,3 +64,6 @@ Add GET /proposals/:projectId for clients to review bids
 
 ## 2025-02-13T15:30:00
 Build proposal submission form on frontend
+
+## 2025-02-14T10:30:00
+Add accept/reject proposal feature for clients
