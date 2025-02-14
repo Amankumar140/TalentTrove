@@ -67,3 +67,6 @@ Build proposal submission form on frontend
 
 ## 2025-02-14T10:30:00
 Add accept/reject proposal feature for clients
+
+## 2025-02-14T15:50:00
+Fix: proposal status not updating on client dashboard
