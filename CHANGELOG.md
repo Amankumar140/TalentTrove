@@ -73,3 +73,6 @@ Fix: proposal status not updating on client dashboard
 
 ## 2025-02-15T09:00:00
 Setup Socket.IO on server for real-time events
+
+## 2025-02-15T14:20:00
+Create chat schema: sender, receiver, message, timestamp
