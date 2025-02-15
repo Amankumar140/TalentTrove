@@ -70,3 +70,6 @@ Add accept/reject proposal feature for clients
 
 ## 2025-02-14T15:50:00
 Fix: proposal status not updating on client dashboard
+
+## 2025-02-15T09:00:00
+Setup Socket.IO on server for real-time events
