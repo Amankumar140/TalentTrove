@@ -76,3 +76,6 @@ Setup Socket.IO on server for real-time events
 
 ## 2025-02-15T14:20:00
 Create chat schema: sender, receiver, message, timestamp
+
+## 2025-02-16T10:00:00
+Implement send and receive message events via Socket.IO
