@@ -85,3 +85,6 @@ Build chat UI component with message bubbles
 
 ## 2025-02-17T09:40:00
 Fix: messages not displaying in correct order
+
+## 2025-02-17T14:10:00
+Add online/offline user status tracking with Socket.IO
