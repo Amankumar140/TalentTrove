@@ -82,3 +82,6 @@ Implement send and receive message events via Socket.IO
 
 ## 2025-02-16T15:00:00
 Build chat UI component with message bubbles
+
+## 2025-02-17T09:40:00
+Fix: messages not displaying in correct order
