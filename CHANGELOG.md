@@ -91,3 +91,6 @@ Add online/offline user status tracking with Socket.IO
 
 ## 2025-02-18T10:30:00
 Build admin panel layout with sidebar navigation
+
+## 2025-02-18T15:20:00
+Add admin route: GET all users with role filter
