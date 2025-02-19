@@ -1,8 +1,11 @@
+ 
+
 
 import React from "react";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Navbar from "./components/Navbar";
+import GeneralContextProvider from "./context/GeneralContext";
 import Landing from "./pages/Landing";
 import Authenticate from "./pages/Authenticate";
 import Freelancer from "./pages/freelancer/Freelancer";
@@ -19,38 +22,31 @@ import AllApplications from "./pages/admin/AllApplications";
 import AllUsers from "./pages/admin/AllUsers";
 import AdminProjects from "./pages/admin/AdminProjects";
 
-// Define Routes using createBrowserRouter
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Navbar />, // Navbar wraps the pages
-    children: [
-      { path: "/", element: <Landing /> },
-      { path: "/authenticate", element: <Authenticate /> },
-
-      { path: "/freelancer", element: <Freelancer /> },
-      { path: "/all-projects", element: <AllProjects /> },
-      { path: "/my-projects", element: <MyProjects /> },
-      { path: "/myApplications", element: <MyApplications /> },
-      { path: "/project/:id", element: <ProjectData /> },
-
-      { path: "/client", element: <Client /> },
-      { path: "/project-applications", element: <ProjectApplications /> },
-      { path: "/new-project", element: <NewProject /> },
-      { path: "/client-project/:id", element: <ProjectWorking /> },
-
-      { path: "/admin", element: <Admin /> },
-      { path: "/admin-projects", element: <AdminProjects /> },
-      { path: "/admin-applications", element: <AllApplications /> },
-      { path: "/all-users", element: <AllUsers /> },
-    ],
-  },
-]);
-
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <Router>
+      <GeneralContextProvider>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/authenticate" element={<Authenticate />} />
+          <Route path="/freelancer" element={<Freelancer />} />
+          <Route path="/all-projects" element={<AllProjects />} />
+          <Route path="/my-projects" element={<MyProjects />} />
+          <Route path="/myApplications" element={<MyApplications />} />
+          <Route path="/project/:id" element={<ProjectData />} />
+          <Route path="/client" element={<Client />} />
+          <Route path="/project-applications" element={<ProjectApplications />} />
+          <Route path="/new-project" element={<NewProject />} />
+          <Route path="/client-project/:id" element={<ProjectWorking />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin-projects" element={<AdminProjects />} />
+          <Route path="/admin-applications" element={<AllApplications />} />
+          <Route path="/all-users" element={<AllUsers />} />
+        </Routes>
+      </GeneralContextProvider>
+    </Router>
+  );
 }
 
 export default App;
-
-

@@ -10,7 +10,7 @@ import SocketHandler from "./SocketHandler.js";
 import { Socket } from "dgram";
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 6001;
 
 // Middleware
 app.use(express.json());
