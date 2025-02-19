@@ -97,3 +97,6 @@ Add admin route: GET all users with role filter
 
 ## 2025-02-19T09:20:00
 Add admin route: suspend or delete user accounts
+
+## 2025-02-19T14:00:00
+Add admin project management: view and remove listings
