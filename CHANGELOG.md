@@ -94,3 +94,6 @@ Build admin panel layout with sidebar navigation
 
 ## 2025-02-18T15:20:00
 Add admin route: GET all users with role filter
+
+## 2025-02-19T09:20:00
+Add admin route: suspend or delete user accounts
