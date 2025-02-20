@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import  '../../styles/admin/allApplication.css'
+ 
 import axios from 'axios'
 
 {/* <h5><b>Freelancer Id: </b> {application.budget}</h5> */}
