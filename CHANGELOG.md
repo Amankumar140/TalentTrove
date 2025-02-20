@@ -100,3 +100,6 @@ Add admin route: suspend or delete user accounts
 
 ## 2025-02-19T14:00:00
 Add admin project management: view and remove listings
+
+## 2025-02-20T10:00:00
+Add pagination to projects and users listing APIs
