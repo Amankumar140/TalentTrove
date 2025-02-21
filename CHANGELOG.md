@@ -109,3 +109,6 @@ Implement search bar for finding freelancers by skill
 
 ## 2025-02-21T09:00:00
 Add profile page: bio, skills, portfolio links
+
+## 2025-02-21T14:30:00
+Add PUT /users/:id to update profile details
