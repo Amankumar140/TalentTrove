@@ -106,3 +106,6 @@ Add pagination to projects and users listing APIs
 
 ## 2025-02-20T15:30:00
 Implement search bar for finding freelancers by skill
+
+## 2025-02-21T09:00:00
+Add profile page: bio, skills, portfolio links
