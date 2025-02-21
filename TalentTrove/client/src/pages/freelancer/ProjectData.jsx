@@ -1,280 +1,214 @@
-import React, { useContext, useEffect, useState } from 'react'
-import {useParams} from 'react-router-dom';
-import axios from 'axios';
  
-import { GeneralContext } from '../../context/GeneralContext';
 
+
+
+import React, { useContext, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import { GeneralContext } from "../../context/GeneralContext";
 
 const ProjectData = () => {
-
-  const {socket} = useContext(GeneralContext);
-
+  const { socket } = useContext(GeneralContext);
   const params = useParams();
+  const [project, setProject] = useState(null);
+  const [clientId, setClientId] = useState("");
+  const [freelancerId] = useState(localStorage.getItem("userId"));
+  const [projectId, setProjectId] = useState(params["id"]);
+  const [proposal, setProposal] = useState("");
+  const [bidAmount, setBidAmount] = useState(0);
+  const [estimatedTime, setEstimatedTime] = useState("");
+  const [projectLink, setProjectLink] = useState("");
+  const [manualLink, setManualLink] = useState("");
+  const [submissionDescription, setSubmissionDescription] = useState("");
+  const [message, setMessage] = useState("");
+  const [chats, setChats] = useState([]);
 
-  console.log(params['id']);
+  useEffect(() => {
+    fetchProject(params["id"]);
+    socket.emit("join-chat-room", {
+      projectId: params["id"],
+      freelancerId: freelancerId,
+    });
+  }, []);
 
-  const [project, setProject] = useState()
-
-  useEffect(()=>{
-    fetchProject(params['id']);
-
-    joinSocketRoom();
-
-  },[])
-
-
-  
-  const joinSocketRoom = async() =>{
-    
-    await socket.emit("join-chat-room", {projectId: params['id'], freelancerId: localStorage.getItem("userId")});
-  }
-
-
-  // useEffect(()=>{
-  //   socket.on("user-joined-room", ()=>{
-  //   })
-  // },[socket])
-
-
-  const fetchProject = async(id) =>{
-    await axios.get(`http://localhost:6001/fetch-project/${id}`).then(
-      (response)=>{
-        setProject(response.data);
-        setProjectId(response.data._id);
-        setClientId(response.data.clientId);
-        console.log(response.data);
-      }
-    ).catch((err)=>{
-      console.log(err);
-    })
-  }
-
-
-
-    const [clientId, setClientId] = useState('');
-    const [freelancerId, setFreelancerId] = useState(localStorage.getItem('userId'));
-    const [projectId, setProjectId] = useState(params['id']);
-    const [proposal, setProposal] = useState('');
-    const [bidAmount, setBidAmount] = useState(0);
-    const [estimatedTime, setEstimatedTime] = useState('');
-
-    const handleBidding = async() =>{
-
-      await axios.post("http://localhost:6001/make-bid", {clientId, freelancerId, projectId, proposal, bidAmount, estimatedTime}).then(
-        (response)=>{
-            setProposal('');
-            setBidAmount(0);
-            setEstimatedTime(0);
-            alert("Bidding successful!!");
-        }
-      ).catch((err)=>{
-        alert("Bidding failed!! Try again!");
-      })
-
+  const fetchProject = async (id) => {
+    try {
+      const response = await axios.get(`http://localhost:6001/fetch-project/${id}`);
+      setProject(response.data);
+      setProjectId(response.data._id);
+      setClientId(response.data.clientId);
+    } catch (err) {
+      console.error(err);
     }
+  };
 
-
-    const [projectLink, setProjectLink] = useState('');
-    const [manualLink, setManualLink] = useState('');
-    const [submissionDescription, setSubmissionDescription] = useState('');
-
-
-    const handleProjectSubmission = async() =>{
-
-      await axios.post("http://localhost:6001/submit-project", {clientId, freelancerId, projectId, projectLink, manualLink, submissionDescription}).then(
-        (response)=>{
-            setProjectLink('');
-            setManualLink('');
-            setSubmissionDescription('');
-            alert("submission successful!!");
-        }
-      ).catch((err)=>{
-        alert("submission failed!! Try again!");
-      })
-
+  const handleBidding = async () => {
+    try {
+      await axios.post("http://localhost:6001/make-bid", {
+        clientId,
+        freelancerId,
+        projectId,
+        proposal,
+        bidAmount,
+        estimatedTime,
+      });
+      setProposal("");
+      setBidAmount(0);
+      setEstimatedTime(0);
+      alert("Bidding successful!");
+    } catch (err) {
+      alert("Bidding failed! Try again.");
     }
+  };
 
+  const handleProjectSubmission = async () => {
+    try {
+      await axios.post("http://localhost:6001/submit-project", {
+        clientId,
+        freelancerId,
+        projectId,
+        projectLink,
+        manualLink,
+        submissionDescription,
+      });
+      setProjectLink("");
+      setManualLink("");
+      setSubmissionDescription("");
+      alert("Submission successful!");
+    } catch (err) {
+      alert("Submission failed! Try again.");
+    }
+  };
 
-
-    const [message, setMessage] = useState('');
-
-    const handleMessageSend = async() =>{
-      socket.emit("new-message", {projectId: params['id'], senderId: localStorage.getItem("userId"), message, time: new Date()});
+  useEffect(() => {
+    fetchChats();
+    socket.on("message-from-user", () => {
       fetchChats();
-      setMessage("");
+    });
+  }, [socket]);
+
+  const fetchChats = async () => {
+    try {
+      const response = await axios.get(`http://localhost:6001/fetch-chats/${params["id"]}`);
+      setChats(response.data.messages || []);
+    } catch (err) {
+      console.error(err);
     }
+  };
 
-
-    useEffect(()=>{
-      fetchChats();
-    },[])
-
-    const [chats, setChats] = useState();
-    const fetchChats = async() =>{
-      await axios.get(`http://localhost:6001/fetch-chats/${params['id']}`).then(
-        (response) =>{
-          setChats(response.data);
-        }
-      )
-    }
-
-    useEffect(()=>{
-      socket.on("message-from-user", ()=>{
-        fetchChats();
-      })
-    },[socket])
-
+  const handleMessageSend = () => {
+    socket.emit("new-message", {
+      projectId: params["id"],
+      senderId: freelancerId,
+      message,
+      time: new Date(),
+    });
+    fetchChats();
+    setMessage("");
+  };
 
   return (
-
-    <>
-      {project ?
-      
-        <div className="project-data-page">
-
-            <div className="project-data-container">
-
-                <div className="project-data">
-
-                      <h3>{project.title}</h3>
-                      <p>{project.description}</p>
-                      <span>
-                        <h5>Required skills</h5>
-                        <div className="required-skills">
-                          {project.skills.map((skill)=>(
-                            <p key={skill}>{skill}</p>
-                          ))}
-                        </div>
-                      </span>
-                      <span>
-                        <h5>Budget</h5>
-                        <h6>&#8377; {project.budget}</h6>
-                      </span>
-
-                </div>
-
-                {/* Freelancer proposal */}
-
-                {project.status === "Available"  ?
-
-                <div className="project-form-body">
-                  <h4>Send proposal</h4>
-                  <span>
-                      <div className="form-floating">
-                        <input type="number" className="form-control mb-3" id="floatingPassword" placeholder="Password" value={bidAmount} onChange={(e)=>setBidAmount(e.target.value)} />
-                        <label htmlFor="floatingPassword">Budget</label>
-                      </div>
-                      <div className="form-floating">
-                        <input type="number" className="form-control mb-3" id="floatingPassword" placeholder="Password" value={estimatedTime} onChange={(e)=>setEstimatedTime(e.target.value)} />
-                        <label htmlFor="floatingPassword">Estimated time (days)</label>
-                      </div>
+    <div className="max-w-4xl mx-auto p-4">
+      {project ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Project Details */}
+          <div className="bg-white shadow-lg rounded-lg p-4">
+            <h3 className="text-xl font-semibold">{project.title}</h3>
+            <p className="text-gray-600">{project.description}</p>
+            <div className="mt-4">
+              <h5 className="font-medium">Required Skills</h5>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {project.skills.map((skill) => (
+                  <span key={skill} className="bg-blue-500 text-white px-3 py-1 text-sm rounded">
+                    {skill}
                   </span>
-                  <div className="form-floating">
-                        <textarea className="form-control mb-3" id="floatingPassword" placeholder="Password" value={proposal} onChange={(e)=>setProposal(e.target.value)}/>
-                        <label htmlFor="floatingPassword">Describe your proposal</label>
-                  </div>
-                  
-                  {!project.bids.includes(localStorage.getItem('userId'))  ? <button className='btn btn-success' onClick={handleBidding} >Post Bid</button> :""}
-                  {project.bids.includes(localStorage.getItem('userId'))  ? <button className='btn btn-primary' disabled >Already bidded</button> :""}
+                ))}
+              </div>
+            </div>
+            <div className="mt-4">
+              <h5 className="font-medium">Budget</h5>
+              <h6 className="text-lg font-semibold">₹ {project.budget}</h6>
+            </div>
+          </div>
+
+          {/* Proposal Form */}
+          {project.status === "Available" && (
+            <div className="bg-gray-100 shadow-md rounded-lg p-4">
+              <h4 className="text-lg font-semibold">Send Proposal</h4>
+              <div className="mt-2">
+                <input
+                  type="number"
+                  className="w-full p-2 border rounded mt-2"
+                  placeholder="Budget"
+                  value={bidAmount}
+                  onChange={(e) => setBidAmount(e.target.value)}
+                />
+                <input
+                  type="number"
+                  className="w-full p-2 border rounded mt-2"
+                  placeholder="Estimated time (days)"
+                  value={estimatedTime}
+                  onChange={(e) => setEstimatedTime(e.target.value)}
+                />
+                <textarea
+                  className="w-full p-2 border rounded mt-2"
+                  placeholder="Describe your proposal"
+                  value={proposal}
+                  onChange={(e) => setProposal(e.target.value)}
+                />
+                {!project.bids.includes(freelancerId) ? (
+                  <button className="w-full mt-3 bg-green-500 text-white py-2 rounded" onClick={handleBidding}>
+                    Post Bid
+                  </button>
+                ) : (
+                  <button className="w-full mt-3 bg-gray-400 text-white py-2 rounded" disabled>
+                    Already Bidded
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Chat Section */}
+          <div className="col-span-2 bg-gray-100 shadow-md rounded-lg p-4">
+            <h4 className="text-lg font-semibold">Chat with the Client</h4>
+            {project.freelancerId === freelancerId ? (
+              <div className="chat-body mt-4">
+                <div className="chat-messages max-h-60 overflow-auto bg-white p-2 rounded">
+                  {chats.length > 0 ? (
+                    chats.map((chat, index) => (
+                      <div key={index} className={`p-2 my-1 text-sm rounded ${chat.senderId === freelancerId ? "bg-blue-500 text-white ml-auto w-fit" : "bg-gray-300 text-black w-fit"}`}>
+                        <p>{chat.text}</p>
+                        <h6 className="text-xs opacity-80">{new Date(chat.time).toLocaleString()}</h6>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-gray-500 text-sm">No messages yet</p>
+                  )}
                 </div>
-
-                : ""}
-
-                {project.freelancerId === localStorage.getItem('userId') ?
-                
-                  <div className="project-form-body">
-
-                      <h4>Submit the project</h4>
-
-                      {project.submissionAccepted ?
-                        <p>Project completed</p>
-                      :
-                      
-                        <>
-                              <div className="form-floating">
-                                  <input type="text" className="form-control mb-3" id="floatingPassword" placeholder="Password" value={projectLink} onChange={(e)=> setProjectLink(e.target.value)} />
-                                  <label htmlFor="floatingPassword">Project link</label>
-                              </div>
-
-                              <div className="form-floating">
-                                  <input type="text" className="form-control mb-3" id="floatingPassword" placeholder="Password" value={manualLink} onChange={(e)=> setManualLink(e.target.value)} />
-                                  <label htmlFor="floatingPassword">Manual link</label>
-                              </div>
-
-                              <div className="form-floating">
-                                  <textarea className="form-control mb-3" id="floatingPassword" placeholder="Password" value={submissionDescription} onChange={(e)=> setSubmissionDescription(e.target.value)} />
-                                  <label htmlFor="floatingPassword">Describe your work</label>
-                            </div>
-                            
-                                                  {project.submission ?
-                                                   
-                                                   <button className="btn btn-secondary" disabled >Already submitted</button>
-                              
-                                                  :
-                                                  
-                                                    <button className="btn btn-success" onClick={handleProjectSubmission} >Submit project</button>
-                                                  }
-                        </>
-                      }
-
-
-
-                  </div>
-                :""}
-
-
-            </div>
-
-            <div className="project-chat-container">
-
-                <h4>Chat with the client</h4>
-                <hr />
-
-                {project.freelancerId === localStorage.getItem('userId') ?
-                
-                    <div className="chat-body">
-
-                      {chats ? 
-
-                          <div className="chat-messages">
-
-                            {chats.messages.map((message)=>(
-
-                                <div className={message.senderId === localStorage.getItem("userId") ? "my-message": "received-message"} key={message.id}>
-                                  <div>
-                                      {/* {message.senderId === localStorage.getItem("userId") ? ""
-                                        : <h5>Client</h5>} */}
-                                      <p>{message.text}</p>
-                                      <h6>{message.time.slice(5,10)} - {message.time.slice(11,19)}</h6>
-                                  </div>
-                                </div>
-                            ))}
-                            
-
-
-                          </div>
-                      
-                      :""}
-
-                        <hr />
-                        <div className="chat-input">
-                          <input type="text" className='form-control' placeholder='Enter something...' value={message} onChange={(e)=> setMessage(e.target.value)} />
-                          <button onClick={handleMessageSend} >Send</button>
-                        </div>
-
-                    </div>
-                :
-                <i style={{color: '#938f8f'}} >Chat will be enabled if the project is assigned to you!!</i>
-                }
-
-
-            </div>
-
-
+                <div className="flex mt-2">
+                  <input
+                    type="text"
+                    className="flex-1 p-2 border rounded-l"
+                    placeholder="Enter message..."
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                  />
+                  <button className="bg-blue-500 text-white px-4 rounded-r" onClick={handleMessageSend}>
+                    Send
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <p className="text-gray-500">Chat will be enabled once the project is assigned to you.</p>
+            )}
+          </div>
         </div>
-      :""}
-    </>
-  )
-}
+      ) : (
+        <p>Loading project details...</p>
+      )}
+    </div>
+  );
+};
 
-export default ProjectData
+export default ProjectData;
