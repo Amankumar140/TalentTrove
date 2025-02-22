@@ -112,3 +112,6 @@ Add profile page: bio, skills, portfolio links
 
 ## 2025-02-21T14:30:00
 Add PUT /users/:id to update profile details
+
+## 2025-02-22T10:20:00
+Add image upload for profile avatar using multer
