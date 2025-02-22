@@ -115,3 +115,6 @@ Add PUT /users/:id to update profile details
 
 ## 2025-02-22T10:20:00
 Add image upload for profile avatar using multer
+
+## 2025-02-22T15:10:00
+Fix: image upload path not resolving on Windows
