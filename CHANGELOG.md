@@ -121,3 +121,6 @@ Fix: image upload path not resolving on Windows
 
 ## 2025-02-24T09:30:00
 Add notification system: alerts for new bids and messages
+
+## 2025-02-24T14:00:00
+Fix: duplicate Socket.IO events on reconnect
