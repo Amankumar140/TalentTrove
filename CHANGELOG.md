@@ -124,3 +124,6 @@ Add notification system: alerts for new bids and messages
 
 ## 2025-02-24T14:00:00
 Fix: duplicate Socket.IO events on reconnect
+
+## 2025-02-26T10:00:00
+Add project status flow: open, in-progress, completed
