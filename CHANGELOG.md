@@ -127,3 +127,6 @@ Fix: duplicate Socket.IO events on reconnect
 
 ## 2025-02-26T10:00:00
 Add project status flow: open, in-progress, completed
+
+## 2025-02-26T15:00:00
+Add review and rating system after project completion
