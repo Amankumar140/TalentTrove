@@ -133,3 +133,6 @@ Add review and rating system after project completion
 
 ## 2025-02-28T09:00:00
 Refactor API routes into modular router files
+
+## 2025-02-28T14:30:00
+Add input sanitization and rate limiting middleware
