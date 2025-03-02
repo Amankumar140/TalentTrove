@@ -139,3 +139,6 @@ Add input sanitization and rate limiting middleware
 
 ## 2025-03-02T09:00:00
 Add responsive CSS for mobile and tablet screens
+
+## 2025-03-02T14:20:00
+Fix: navbar not collapsing on small screens
