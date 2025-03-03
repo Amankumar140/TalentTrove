@@ -11,3 +11,4 @@
 [2025-02-25T16:20:00] Add Python ML service scaffolding
 [2025-02-27T10:10:00] Improve API error handling and validation
 [2025-03-01T13:45:00] Style improvements: responsive UI and dark theme polish
+[2025-03-03T11:00:00] Add .gitignore with Python, Node, and editor entries
