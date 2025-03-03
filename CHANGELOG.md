@@ -145,3 +145,6 @@ Fix: navbar not collapsing on small screens
 
 ## 2025-03-03T09:00:00
 Final QA: test all routes with Postman collection
+
+## 2025-03-03T10:30:00
+Cleanup: remove console.logs and unused imports
