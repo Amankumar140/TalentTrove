@@ -54,3 +54,7 @@ coverage.xml
 .cache/
 tmp/
 temp/
+
+# Private helper scripts (do not commit)
+backdate_commits.ps1
+commit_log.txt
