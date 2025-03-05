@@ -13,10 +13,11 @@ const Authenticate = () => {
       
       {/* Navbar */}
       <div className="w-full flex justify-between items-center py-4 px-6 md:px-10 bg-opacity-80 backdrop-blur-md fixed top-0 left-0 right-0 z-50 text-white bg-[#11111a] shadow-md">
-        <h3 className="text-lg font-semibold cursor-pointer" onClick={() => navigate("/")}>
-          SB Works
+        <h3 className="text-xl md:text-2xl font-bold text-blue-300" onClick={() => navigate("/")}>
+           TalentTrove
         </h3>
-        <p className="cursor-pointer hover:underline" onClick={() => navigate("/")}>
+        <p className="cursor-pointer font-bold text-blue-500 hover:text-blue-700 hover:underline transition-all duration-300 ease-in-out"
+ onClick={() => navigate("/")}>
           Home
         </p>
       </div>

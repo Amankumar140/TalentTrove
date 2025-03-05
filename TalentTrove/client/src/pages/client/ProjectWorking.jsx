@@ -1,7 +1,5 @@
  
 
-
-
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
@@ -10,145 +8,142 @@ import { GeneralContext } from '../../context/GeneralContext';
 const ProjectWorking = () => {
   const { socket } = useContext(GeneralContext);
   const params = useParams();
-  const [project, setProject] = useState(null);
+  const [project, setProject] = useState();
   const [clientId, setClientId] = useState(localStorage.getItem('userId'));
-  const [projectId, setProjectId] = useState(params.id);
+  const [projectId, setProjectId] = useState(params['id']);
   const [message, setMessage] = useState('');
-  const [chats, setChats] = useState([]);
+  const [chats, setChats] = useState();
 
   useEffect(() => {
-    fetchProject(params.id);
+    fetchProject(params['id']);
     joinSocketRoom();
-    fetchChats();
   }, []);
 
   const joinSocketRoom = async () => {
-    await socket.emit('join-chat-room', { projectId: params.id, freelancerId: '' });
+    await socket.emit("join-chat-room", { projectId: params['id'], freelancerId: "" });
   };
 
   const fetchProject = async (id) => {
-    try {
-      const response = await axios.get(`http://localhost:6001/fetch-project/${id}`);
-      setProject(response.data);
-      setProjectId(response.data._id);
-      setClientId(response.data.clientId);
-    } catch (err) {
-      console.error(err);
-    }
+    await axios.get(`http://localhost:6001/fetch-project/${id}`)
+      .then((response) => {
+        setProject(response.data);
+        setProjectId(response.data._id);
+        setClientId(response.data.clientId);
+      })
+      .catch((err) => console.log(err));
   };
 
   const handleApproveSubmission = async () => {
-    try {
-      await axios.get(`http://localhost:6001/approve-submission/${params.id}`);
-      fetchProject(params.id);
-      alert('Submission approved!');
-    } catch (err) {
-      console.error(err);
-    }
+    await axios.get(`http://localhost:6001/approve-submission/${params['id']}`)
+      .then(() => {
+        fetchProject(params['id']);
+        alert("Submission approved!");
+      })
+      .catch((err) => console.log(err));
   };
 
   const handleRejectSubmission = async () => {
-    try {
-      await axios.get(`http://localhost:6001/reject-submission/${params.id}`);
-      fetchProject(params.id);
-      alert('Submission rejected!');
-    } catch (err) {
-      console.error(err);
-    }
+    await axios.get(`http://localhost:6001/reject-submission/${params['id']}`)
+      .then(() => {
+        fetchProject(params['id']);
+        alert("Submission rejected!");
+      })
+      .catch((err) => console.log(err));
   };
 
   const handleMessageSend = async () => {
-    socket.emit('new-message', {
-      projectId: params.id,
-      senderId: localStorage.getItem('userId'),
-      message,
-      time: new Date()
-    });
-    setMessage('');
+    socket.emit("new-message", { projectId: params['id'], senderId: localStorage.getItem("userId"), message, time: new Date() });
+    setMessage("");
     fetchChats();
   };
 
+  useEffect(() => {
+    fetchChats();
+  }, []);
+
   const fetchChats = async () => {
-    try {
-      const response = await axios.get(`http://localhost:6001/fetch-chats/${params.id}`);
-      setChats(response.data);
-    } catch (err) {
-      console.error(err);
-    }
+    await axios.get(`http://localhost:6001/fetch-chats/${params['id']}`)
+      .then((response) => {
+        setChats(response.data);
+      });
   };
 
   useEffect(() => {
-    socket.on('message-from-user', fetchChats);
+    socket.on("message-from-user", () => {
+      fetchChats();
+    });
   }, [socket]);
 
+ 
   return (
-    <div className="container mx-auto p-6">
-      {project && (
-        <div className="bg-gray-900 text-white p-6 rounded-lg shadow-lg">
-          <h3 className="text-2xl font-bold text-blue-400">{project.title}</h3>
-          <p className="mt-2 text-gray-300">{project.description}</p>
-          <h5 className="mt-4 text-lg font-semibold">Required Skills</h5>
-          <div className="flex flex-wrap gap-2 mt-2">
-            {project.skills.map((skill) => (
-              <span key={skill} className="bg-blue-600 px-3 py-1 rounded-full text-sm">{skill}</span>
-            ))}
-          </div>
-          <h5 className="mt-4 text-lg font-semibold">Budget: ₹ {project.budget}</h5>
-        </div>
-      )}
-
-      {project?.freelancerId && (
-        <div className="mt-6 bg-gray-800 text-white p-6 rounded-lg shadow-lg">
-          <h4 className="text-xl font-bold">Submission</h4>
-          {project.submission ? (
-            <div className="mt-4">
-              <p>
-                <strong>Project Link:</strong>{' '}
-                <a href={project.projectLink} target="_blank" className="text-blue-400">{project.projectLink}</a>
-              </p>
-              <p>
-                <strong>Manual Link:</strong>{' '}
-                <a href={project.manulaLink} target="_blank" className="text-blue-400">{project.manulaLink}</a>
-              </p>
-              <p className="mt-2 text-gray-300">{project.submissionDescription}</p>
-              {project.submissionAccepted ? (
-                <h5 className="text-green-400 mt-3">Project completed!</h5>
-              ) : (
-                <div className="flex gap-3 mt-3">
-                  <button onClick={handleApproveSubmission} className="px-4 py-2 bg-green-500 text-white rounded-lg">Approve</button>
-                  <button onClick={handleRejectSubmission} className="px-4 py-2 bg-red-500 text-white rounded-lg">Reject</button>
+    <>
+      {project ? (
+        <div className="p-6 bg-gray-900 min-h-screen text-white">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="bg-gray-800 p-6 rounded-xl shadow-lg">
+              <h3 className="text-xl font-semibold">{project.title}</h3>
+              <p className="mt-2 text-gray-300">{project.description}</p>
+              <div className="mt-4">
+                <h5 className="text-lg font-medium">Required skills</h5>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {project.skills.map((skill) => (
+                    <span key={skill} className="px-3 py-1 bg-purple-600 rounded-full text-sm">{skill}</span>
+                  ))}
                 </div>
+              </div>
+              <div className="mt-4">
+                <h5 className="text-lg font-medium">Budget</h5>
+                <h6 className="text-green-400 font-semibold">₹ {project.budget}</h6>
+              </div>
+            </div>
+            
+            <div className="project-submissions-container bg-[#1B1F32] shadow-md rounded-lg p-6">
+              <h4 className="text-lg font-semibold text-purple-400">Submission</h4>
+              {project.submission ? (
+                <div className="project-submission">
+                  <span className="block mb-2">
+                    <h5 className="font-semibold">Project Link:</h5>
+                    <a href={project.projectLink} target='_blank' rel="noopener noreferrer" className="text-blue-400 hover:underline">{project.projectLink}</a>
+                  </span>
+                  <span className="block mb-2">
+                    <h5 className="font-semibold">Manual Link:</h5>
+                    <a href={project.manualLink} target='_blank' rel="noopener noreferrer" className="text-blue-400 hover:underline">{project.manualLink}</a>
+                  </span>
+                  <h5 className="font-semibold mt-4">Description for work:</h5>
+                  <p className="text-gray-300">{project.submissionDescription}</p>
+                  {project.submissionAccepted ? (
+                    <h5 className="text-green-400 font-semibold mt-4">Project completed!!</h5>
+                  ) : (
+                    <div className="submission-btns mt-4">
+                      <button className='bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition mr-2' onClick={handleApproveSubmission}>Approve</button>
+                      <button className='bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition' onClick={handleRejectSubmission}>Reject</button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <p className="text-gray-300">No submissions yet!!</p>
               )}
             </div>
-          ) : (
-            <p className="text-gray-400">No submissions yet.</p>
-          )}
-        </div>
-      )}
-
-      <div className="mt-6 bg-gray-900 text-white p-6 rounded-lg shadow-lg">
-        <h4 className="text-xl font-bold">Chat with Freelancer</h4>
-        <hr className="my-4 border-gray-700" />
-        {project?.freelancerId ? (
-          <div>
-            <div className="chat-messages h-64 overflow-y-auto p-4 bg-gray-800 rounded-lg">
-              {chats?.messages?.map((msg, index) => (
-                <div key={index} className={`p-2 my-2 ${msg.senderId === localStorage.getItem('userId') ? 'bg-blue-600' : 'bg-gray-700'} rounded-lg w-fit max-w-xs`}> 
-                  <p>{msg.text}</p>
-                  <span className="text-xs text-gray-400">{msg.time.slice(11, 19)}</span>
+          </div>
+          
+          <div className="mt-6 bg-gray-800 p-6 rounded-xl shadow-lg">
+            <h4 className="text-lg font-semibold">Chat with the Freelancer</h4>
+            <div className="mt-4 h-64 overflow-y-auto bg-gray-900 p-4 rounded-lg">
+              {chats && chats.messages.map((message) => (
+                <div key={message.id} className={`p-1 px-2 my-2 rounded-lg w-max ${message.senderId === localStorage.getItem("userId") ? "bg-purple-600 ml-auto" : "bg-purple-600"}`}>
+                  <p>{message.text}</p>
+                  <h6 className="text-[10px]">{message.time.slice(5, 10)} - {message.time.slice(11, 19)}</h6>
                 </div>
               ))}
             </div>
-            <div className="flex mt-4">
-              <input type="text" className="flex-1 p-2 rounded-lg bg-gray-800 text-white" placeholder="Enter message..." value={message} onChange={(e) => setMessage(e.target.value)} />
-              <button onClick={handleMessageSend} className="ml-2 px-4 py-2 bg-blue-500 rounded-lg">Send</button>
+            <div className="mt-4 flex gap-2">
+              <input type="text" className="flex-1 p-2 bg-gray-700 rounded" placeholder="Enter something..." value={message} onChange={(e) => setMessage(e.target.value)} />
+              <button className="bg-purple-600 px-4 py-2 rounded hover:bg-purple-700" onClick={handleMessageSend}>Send</button>
             </div>
           </div>
-        ) : (
-          <p className="text-gray-400">Chat will be enabled once the project is assigned.</p>
-        )}
-      </div>
-    </div>
+        </div>
+      ) : null}
+    </>
   );
 };
 

@@ -70,7 +70,7 @@ const Freelancer = () => {
               { title: 'Current Projects', count: freelancerData.currentProjects.length, link: '/my-projects' },
               { title: 'Completed Projects', count: freelancerData.completedProjects.length, link: '/my-projects' },
               { title: 'Applications', count: applicationsCount.length, link: '/myApplications' },
-              { title: 'Funds Available', count: `₹${freelancerData.funds}`, link: '#' },
+              { title: 'Funds Available', count: `$${freelancerData.funds}`, link: '#' },
             ].map((item, index) => (
               <div key={index} className="bg-gray-800 p-4 rounded-lg shadow-md text-center">
                 <h4 className="text-lg font-semibold">{item.title}</h4>

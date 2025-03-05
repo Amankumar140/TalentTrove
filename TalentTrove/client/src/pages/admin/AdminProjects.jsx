@@ -76,12 +76,12 @@ const AdminProjects = () => {
                   <h3 className="text-xl font-bold text-white">{project.title}</h3>
                   <p className="text-sm text-gray-400">{project.postedDate}</p>
                 </div>
-                <h5 className="text-md font-medium text-blue-400">Budget: ₹ {project.budget}</h5>
+                <h5 className="text-md font-medium text-blue-400">Budget: $ {project.budget}</h5>
                 <h5 className="text-md font-medium text-white">Client: {project.clientName} ({project.clientEmail})</h5>
                 <p className="text-gray-300 mt-2">{project.description}</p>
                 <div className="flex flex-wrap gap-2 mt-2">
                   {project.skills.map(skill => (
-                    <span key={skill} className="bg-blue-500 text-black px-3 py-1 rounded-lg">{skill}</span>
+                    <span key={skill} className="bg-blue-200 text-black px-3 py-1 rounded-lg">{skill}</span>
                   ))}
                 </div>
                 <div className="mt-2 flex justify-between">

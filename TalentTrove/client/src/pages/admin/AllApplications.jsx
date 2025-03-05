@@ -38,7 +38,7 @@ const AllApplications = () => {
                 ))}
               </div>
             </div>
-            <h6 className="text-md font-medium text-blue-400 mt-2">Budget: ₹ {application.budget}</h6>
+            <h6 className="text-md font-medium text-blue-400 mt-2">Budget: $ {application.budget}</h6>
             <h5 className="text-md font-medium text-white">Client: {application.clientName} ({application.clientEmail})</h5>
             <h5 className="text-md font-medium text-yellow-400">Status: {application.status}</h5>
           </div>

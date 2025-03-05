@@ -63,7 +63,7 @@ const Client = () => {
               <h3 className="text-xl font-semibold text-blue-300">{project.title}</h3>
               <p className="text-gray-500 text-sm">{String(project.postedDate).slice(0, 25)}</p>
             </div>
-            <h5 className="text-lg font-medium text-blue-400 mt-2">Budget - ₹ {project.budget}</h5>
+            <h5 className="text-lg font-medium text-blue-400 mt-2">Budget - $ {project.budget}</h5>
             <p className="text-gray-400 mt-2">{project.description}</p>
             <div className="mt-3 flex justify-between items-center text-sm text-gray-300">
               <h6 className="font-semibold">Status - {project.status}</h6>

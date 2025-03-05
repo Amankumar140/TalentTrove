@@ -1,5 +1,4 @@
 
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
@@ -20,16 +19,13 @@ const Landing = () => {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white overflow-hidden">
       {/* Navbar */}
-      <nav className="w-full flex justify-between items-center py-3 px-6 md:px-10 bg-gradient-to-br from-gray-900 to-black bg-opacity-90 fixed top-0 left-0 right-0 z-50 transition-all duration-300">
-
-
-        <h3 className="text-xl md:text-2xl font-bold text-purple-400">SB Works</h3>
+      <nav className="w-full flex justify-between items-center py-3 px-6 md:px-10 bg-gradient-to-br from-gray-900 to-black fixed top-0 left-0 right-0 z-50">
+        <h3 className="text-xl md:text-2xl font-bold text-purple-400"> TalentTrove</h3>
 
         {/* Desktop Menu */}
         <div className="hidden md:flex space-x-6">
-          <button className="text-gray-300 hover:text-white transition">Home</button>
           <button className="text-gray-300 hover:text-white transition">About</button>
           <button className="text-gray-300 hover:text-white transition">Services</button>
           <button className="text-gray-300 hover:text-white transition">Contact</button>
@@ -61,10 +57,10 @@ const Landing = () => {
       {/* Hero Section */}
       <div className="flex flex-col items-center justify-center text-center px-6 py-24 md:py-32 lg:py-40 mt-16">
         <h1 className="text-3xl md:text-5xl font-bold text-white leading-tight max-w-3xl">
-          Start and Build Your Freelance Career Here
+          Start and Build Your Freelance Career at TalentTrove
         </h1>
         <p className="text-sm md:text-lg text-gray-400 mt-4 max-w-xl">
-          Only at SB Works, you can connect with clients, build a great portfolio, and explore amazing job opportunities.
+        Welcome to TalentTrove – the ultimate platform where freelancers and clients connect seamlessly. Whether you're a developer, designer, writer, or marketer, we provide you with the tools and opportunities to showcase your skills, land high-paying projects, and build a thriving freelance career.     
         </p>
         <button
           onClick={() => navigate("/authenticate")}

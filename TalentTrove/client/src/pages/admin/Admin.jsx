@@ -1,5 +1,3 @@
- 
-
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -56,7 +54,7 @@ const Admin = () => {
             <h4 className="text-lg font-semibold text-blue-400">{item.title}</h4>
             <p className="text-2xl font-bold my-2 text-white">{item.count}</p>
             <button 
-              className="mt-4 px-4 py-2 bg-blue-500 text-black rounded-lg hover:bg-blue-600"
+              className="mt-4 px-4 py-2 bg-blue-300 text-black rounded-lg hover:bg-blue-600"
               onClick={() => navigate(item.title === "Users" ? '/all-users' : item.title === "Applications" ? '/admin-applications' : '/admin-projects')}
             >
               View {item.title}

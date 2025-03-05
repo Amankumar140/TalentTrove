@@ -22,13 +22,7 @@ const Login = ({ setAuthType }) => {
         <div className="absolute top-5 right-[-15px] w-14 h-14 sm:w-16 sm:h-16 bg-gray-600 rounded-full blur-lg opacity-40"></div>
 
         <h2 className="text-xl sm:text-2xl font-semibold text-center mb-5">Sign In</h2>
-
-        {/* Social Login */}
-        <button className="w-full flex items-center justify-center gap-2 bg-transparent border border-gray-600 py-2 rounded-md hover:bg-gray-800 mb-3 transition text-sm sm:text-base">
-          <FaGoogle /> Continue with Google
-        </button>
-
-        <p className="text-center text-gray-400 my-2">or</p>
+ 
 
         {/* Email Input */}
         <input
@@ -65,9 +59,7 @@ const Login = ({ setAuthType }) => {
             Create an account
           </span>
         </p>
-        <p className="text-center text-gray-400 mt-1 cursor-pointer hover:underline text-sm sm:text-base">
-          Forgot password?
-        </p>
+         
       </div>
     </div>
   );

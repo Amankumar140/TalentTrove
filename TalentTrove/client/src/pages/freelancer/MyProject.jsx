@@ -68,7 +68,7 @@ const MyProjects = () => {
                 <p className="text-gray-400 text-sm">{project.postedDate}</p>
               </div>
               <h5 className="text-green-400 text-lg font-semibold mt-2">
-                Budget: ₹{project.budget}
+                Budget: ${project.budget}
               </h5>
               <p className="text-gray-300 mt-2">{project.description}</p>
               <div className="flex justify-between items-center mt-4 text-gray-400 text-sm">
