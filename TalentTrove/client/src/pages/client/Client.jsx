@@ -38,8 +38,8 @@ const Client = () => {
   };
 
   return (
-    <div className="client-projects-page bg-black text-white min-h-screen p-6">
-      <div className="max-w-4xl mx-auto bg-gray-900 p-6 rounded-xl shadow-lg">
+    <div className="client-projects-page bg-gray-900 text-white min-h-screen p-6  ">
+      <div className="max-w-4xl mx-auto bg-gray-600 p-6 rounded-xl shadow-lg">
         <h3 className="text-2xl font-bold text-blue-400 mb-4 text-left">My Projects</h3>
         <div className="flex justify-start items-center mb-4">
           <select

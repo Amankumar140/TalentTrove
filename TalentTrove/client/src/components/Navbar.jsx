@@ -38,7 +38,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="w-full bg-black shadow-lg">
+    <nav className="w-full bg-black shadow-lg  ">
       <div className="flex justify-between items-center py-4 px-6 md:px-10 text-white">
         
         {/* Logo */}
@@ -52,7 +52,7 @@ const Navbar = () => {
         </div>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex space-x-6 text-gray-300">
+        <div className="hidden md:flex space-x-6 text-gray-300 ">
           {menuItems[usertype]?.map((item) => (
             <p key={item.path} onClick={() => handleNavigate(item.path)} className="hover:text-white cursor-pointer">
               {item.label}
