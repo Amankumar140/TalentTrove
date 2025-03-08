@@ -1,134 +1,101 @@
-import React, { useEffect, useState } from 'react'
-import axios from "axios"
-import {useNavigate} from 'react-router-dom'
-import '../../styles/freelancer/AllProjects.css' 
+ 
 
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const AdminProjects = () => {
   const navigate = useNavigate();
-
   const [projects, setProjects] = useState([]);
-
-  const [displayprojects, setDisplayProjects] = useState([]);
-
-  const [allSkills, setAllSkills] = useState([]); 
-
-  useEffect(()=>{
-    fetchProjects();
-  },[])
-
-  const fetchProjects = async()=>{
-    await axios.get('http://localhost:6001/fetch-projects').then(
-      (response)=>{
-          setProjects(response.data);
-          setDisplayProjects(response.data.reverse());
-
-          response.data.map((project)=>{
-            project.skills.map((skill)=>{
-              if(!allSkills.includes(skill)){
-                allSkills.push(skill); 
-              }
-            })
-          })
-      }
-    ).catch((err)=>{
-      console.log(err);
-      fetchProjects();
-    })
-  }
-
-
+  const [displayProjects, setDisplayProjects] = useState([]);
+  const [allSkills, setAllSkills] = useState([]);
   const [categoryFilter, setCategoryFilter] = useState([]);
 
-  const handleCategoryCheckBox = (e) =>{
+  useEffect(() => {
+    fetchProjects();
+  }, []);
+
+  const fetchProjects = async () => {
+    await axios.get('http://localhost:6001/fetch-projects')
+      .then(response => {
+        setProjects(response.data);
+        setDisplayProjects(response.data.reverse());
+
+        let skillsSet = new Set();
+        response.data.forEach(project => {
+          project.skills.forEach(skill => skillsSet.add(skill));
+        });
+        setAllSkills([...skillsSet]);
+      })
+      .catch(err => console.log(err));
+  };
+
+  const handleCategoryCheckBox = (e) => {
     const value = e.target.value;
-    if(e.target.checked){
+    if (e.target.checked) {
       setCategoryFilter([...categoryFilter, value]);
-    }else{
-        setCategoryFilter(categoryFilter.filter(size=> size !== value));
+    } else {
+      setCategoryFilter(categoryFilter.filter(skill => skill !== value));
     }
-  }
+  };
 
-  useEffect(()=>{
-
-
-    if (categoryFilter.length > 0){
-        setDisplayProjects(projects.filter(project => categoryFilter.every(skill => project.skills.includes(skill))).reverse());
-    }else{
-        setDisplayProjects(projects.reverse());
+  useEffect(() => {
+    if (categoryFilter.length > 0) {
+      setDisplayProjects(projects.filter(project => categoryFilter.every(skill => project.skills.includes(skill))).reverse());
+    } else {
+      setDisplayProjects(projects.reverse());
     }
-
-
-}, [categoryFilter])
-
+  }, [categoryFilter]);
 
   return (
-    <div className="all-projects-page">
-
-      <div className="project-filters">
-
-        <h3>Filters</h3>
-        <hr />
-
-        <div className="filters">
-          <h5>Skills</h5>
-
-          {allSkills.length > 0 ? 
-          
-              <div className="filter-options">
-
-                  {allSkills.map((skill)=>(
-                    <div className="form-check" key={skill}>
-                      <input className="form-check-input" type="checkbox" value={skill} id="flexCheckDefault" onChange={handleCategoryCheckBox} />
-                      <label className="form-check-label" htmlFor="flexCheckDefault">{skill}</label>
-                    </div>
-                  ))}
-
-              </div>
-          :""}
+    <div className="bg-[#101214] text-white min-h-screen p-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="bg-[#2e3434] p-6 rounded-2xl shadow-lg">
+          <h3 className="text-lg font-semibold text-blue-400">Filters</h3>
+          <hr className="my-2 border-gray-700" />
+          <h5 className="text-md font-medium text-white">Skills</h5>
+          {allSkills.length > 0 && (
+            <div className="mt-2 space-y-2">
+              {allSkills.map(skill => (
+                <div key={skill} className="flex items-center space-x-2">
+                  <input type="checkbox" value={skill} onChange={handleCategoryCheckBox} className="form-checkbox text-blue-500" />
+                  <label className="text-white">{skill}</label>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
+        <div className="col-span-2">
+          <h3 className="text-lg font-semibold text-blue-300">All Projects</h3>
+          <hr className="my-2 border-gray-700" />
+          <div className="grid gap-4">
+            {displayProjects.map(project => (
+              <div key={project._id} className="bg-[#2e3434] p-6 rounded-2xl shadow-lg">
+                <div className='flex justify-between'>
+                  <h3 className="text-xl font-bold text-white">{project.title}</h3>
+                  <p className="text-sm text-gray-400">{project.postedDate}</p>
+                </div>
+                <h5 className="text-md font-medium text-blue-300">Budget: $ {project.budget}</h5>
+                <h5 className="text-md font-medium text-white">Client: {project.clientName} ({project.clientEmail})</h5>
+                <p className="text-gray-300 mt-2">{project.description}</p>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {project.skills.map(skill => (
+                    <span key={skill} className="bg-blue-200 text-black px-3 py-1 rounded-lg">{skill}</span>
+                  ))}
+                </div>
+                <div className="mt-2 flex justify-between">
+                  <p className="text-gray-400">{project.bids.length} bids</p>
+                  <h6 className="text-blue-400 font-medium">Avg Bid: ₹ {project.bids.length > 0 ? project.bidAmounts.reduce((acc, curr) => acc + curr, 0) / project.bids.length : 0}</h6>
+                </div>
+                <h5 className="text-md font-medium text-yellow-300">Status: {project.status}</h5>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
-
-      <div className="projects-list">
-
-        <h3>All projects</h3>
-        <hr />
-
-        {displayprojects.map((project)=>(
-
-            <div className="listed-project" key={project._id}  >
-              <div className='listed-project-head'>
-                  <h3>{project.title}</h3>
-                  <p>{project.postedDate}</p>
-              </div>
-              <h5>Budget &#8377; {project.budget}</h5>
-              <h5>Client name: {project.clientName}</h5>
-              <h5>Client email: {project.clientEmail}</h5>
-              <p>{project.description}</p>
-              <div className="skills">
-                {
-                  project.skills.map((skill)=>(
-                    <h6 key={skill} >{skill}</h6>
-                  ))
-                }
-              </div>
-
-              <div className="bids-data">
-                <p>{project.bids.length} bids</p>
-                <h6>&#8377; {project.bids.length > 0 ? project.bidAmounts.reduce((accumulator, currentValue) => accumulator + currentValue, 0) : 0} (avg bid)</h6>
-              </div>
-              <h5>Status - {project.status}</h5>
-              <hr />
-            </div>
-        ))}
-
-
-      </div>
-
     </div>
-  )
-}
+  );
+};
 
-
-export default AdminProjects
+export default AdminProjects;

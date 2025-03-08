@@ -1,229 +1,247 @@
-import express from "express";
-import bodyParser from "body-parser";
-import mongoose from "mongoose";
-import cors from "cors";
-import bcrypt from "bcrypt";
-import { Application, Chat, Freelancer, Project, User } from "./Schema.js";
-import { Server } from "socket.io";
-import http from "http";
-import SocketHandler from "./SocketHandler.js";
-import { Socket } from "dgram";
+
+import express from 'express';
+import bodyParser from 'body-parser';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import bcrypt from 'bcrypt';
+import { Application, Chat, Freelancer, Project, User } from './Schema.js';
+import { Server } from 'socket.io';
+import http from 'http';
+import SocketHandler from './SocketHandler.js';
 
 const app = express();
-const PORT = 6001;
 
-// Middleware
 app.use(express.json());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
+app.use(bodyParser.json({limit: "30mb", extended: true}))
+app.use(bodyParser.urlencoded({limit: "30mb", extended: true}));
 app.use(cors());
+
 
 const server = http.createServer(app);
 
 const io = new Server(server, {
-  cors: {
-    origin: "*",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-  },
+    cors: {
+        origin: '*',
+        methods: ['GET', 'POST', 'PUT', 'DELETE']
+    }
 });
 
-io.on("connection", (socket) => {
-  console.log("User connected");
-  SocketHandler(socket);
-});
+io.on("connection", (socket) =>{
+    console.log("User connected");
 
-// Connect to MongoDB
-const mongoUrl =
-  "mongodb+srv://aman:amankr2003@freelancing.g8xvg.mongodb.net/?retryWrites=true&w=majority&appName=freelancing";
-mongoose
-  .connect(mongoUrl, {
+    SocketHandler(socket);
+})
+
+
+const PORT = 6001;
+
+mongoose.connect("mongodb+srv://aman:amankr2003@freelancing.g8xvg.mongodb.net/?retryWrites=true&w=majority&appName=freelancing",{
     useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    console.log("MongoDB Connected");
+    useUnifiedTopology: true
+}).then(()=>{
 
-    app.post("/register", async (req, res) => {
-      try {
-        const { username, email, password, usertype } = req.body;
-        const salt = await bcrypt.genSalt(10);
-        const passwordHash = await bcrypt.hash(password, salt);
-        const newUser = new User({
-          username,
-          email,
-          password: passwordHash,
-          usertype,
-        });
-        const user = await newUser.save();
 
-        if (usertype === "freelancer") {
-          const newFreelancer = new Freelancer({
-            userId: user._id,
-          });
-          await newFreelancer.save();
+    app.post('/register', async (req, res) =>{
+        try{
+    
+            const {username, email, password, usertype} = req.body;
+    
+            const salt = await bcrypt.genSalt();
+            const passwordHash = await bcrypt.hash(password, salt);
+    
+            const newUser = new User({
+                username, 
+                email,
+                password: passwordHash,
+                usertype
+            });
+
+            const user = await newUser.save();
+            
+            if(usertype === 'freelancer'){
+                const newFreelancer = new Freelancer({
+                    userId: user._id
+                })
+                await newFreelancer.save();
+            }
+    
+            res.status(200).json(user);
+    
+        }catch(err){
+            res.status(500).json({error: err.message});
         }
-
-        res.status(200).json(user);
-      } catch (err) {
-        res.status(500).json({ error: err.message });
-      }
     });
 
-    app.post("/login", async (req, res) => {
-      try {
-        const { email, password } = req.body;
-        const user = await User.findOne({ email: email });
-        if (!user) return res.status(400).json({ msg: "User does not exist" });
 
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch)
-          return res.status(400).json({ msg: "Invalid credentials" });
-
-        res.status(200).json(user);
-      } catch (err) {
-        res.status(500).json({ error: err.message });
-      }
+    app.post('/login', async (req, res) =>{
+        try{
+            const {email, password} = req.body;
+            const user = await User.findOne({email:email});
+            if(!user) return res.status(400).json({msg: "User does not exist"});
+    
+            const isMatch = await bcrypt.compare(password, user.password);
+            if(!isMatch) return res.status(400).json({msg: "Invalid credentials"});
+                 
+            res.status(200).json(user);
+        }catch(err){
+            res.status(500).json({error: err.message});
+        }
     });
 
-    app.get("/fetch-freelancer/:id", async (req, res) => {
-      try {
-        const freelancer = await Freelancer.findOne({ userId: req.params.id });
 
-        res.status(200).json(freelancer);
-      } catch (err) {
-        res.status(500).json({ error: err.message });
-      }
+    app.get('/fetch-freelancer/:id', async(req, res)=>{
+        try{
+
+            const freelancer = await Freelancer.findOne({userId: req.params.id});
+
+            res.status(200).json(freelancer);
+
+        }catch(err){
+            res.status(500).json({error: err.message});
+        }
+    })
+
+    
+    app.post('/update-freelancer', async (req, res) => {
+        try {
+            const { freelancerId, updateSkills, description } = req.body;
+    
+             
+            if (!freelancerId) {
+                return res.status(400).json({ error: "Freelancer ID is required" });
+            }
+    
+             
+            const freelancer = await Freelancer.findById(freelancerId);
+            if (!freelancer) {
+                return res.status(404).json({ error: "Freelancer not found" });
+            }
+    
+            
+            let skills = Array.isArray(updateSkills) ? updateSkills : updateSkills.split(',').map(skill => skill.trim());
+    
+            
+            freelancer.skills = skills;
+            freelancer.description = description;
+    
+            console.log("Updating freelancer:", freelancer);
+    
+            await freelancer.save();
+            res.status(200).json(freelancer);
+    
+        } catch (err) {
+            console.error("Update Error:", err);
+            res.status(500).json({ error: "Internal Server Error", details: err.message });
+        }
     });
+    
 
-    app.post("/update-freelancer", async (req, res) => {
-      const { freelancerId, updateSkills, description } = req.body;
-      try {
-        const freelancer = await Freelancer.findById(freelancerId);
-
-        let skills = updateSkills.split(",");
-
-        freelancer.skills = skills;
-        freelancer.description = description;
-
-        await freelancer.save();
-
-        res.status(200).json(freelancer);
-      } catch (err) {
-        res.status(500).json({ error: err.message });
-      }
-    });
 
     // fetch project
 
-    app.get("/fetch-project/:id", async (req, res) => {
-      try {
-        const project = await Project.findById(req.params.id);
+    app.get('/fetch-project/:id', async(req, res)=>{
+        try{
 
-        res.status(200).json(project);
-      } catch (err) {
-        res.status(500).json({ error: err.message });
-      }
-    });
+            const project = await Project.findById( req.params.id);
+
+            res.status(200).json(project);
+
+        }catch(err){
+            res.status(500).json({error: err.message});
+        }
+    })
 
     // fetch all projects
-    app.get("/fetch-projects", async (req, res) => {
-      try {
-        const projects = await Project.find();
+    app.get('/fetch-projects', async(req, res)=>{
+        try{
 
-        res.status(200).json(projects);
-      } catch (err) {
-        res.status(500).json({ error: err.message });
-      }
-    });
+            const projects = await Project.find();
 
-    app.post("/new-project", async (req, res) => {
-      const {
-        title,
-        description,
-        budget,
-        skills,
-        clientId,
-        clientName,
-        clientEmail,
-      } = req.body;
-      try {
-        const projectSkills = skills.split(",");
-        const newProject = new Project({
-          title,
-          description,
-          budget,
-          skills: projectSkills,
-          clientId,
-          clientName,
-          clientEmail,
-          postedDate: new Date(),
-        });
-        await newProject.save();
-        res.status(200).json({ message: "Project added" });
-      } catch (err) {
-        res.status(500).json({ error: err.message });
-      }
-    });
+            res.status(200).json(projects);
+
+        }catch(err){
+            res.status(500).json({error: err.message});
+        }
+    })
+
+    app.post('/new-project', async(req, res)=>{
+        const {title, description, budget, skills, clientId,  clientName,  clientEmail} = req.body;
+        try{
+
+            const projectSkills = skills.split(',');
+            const newProject = new Project({
+                title,
+                description,
+                budget, 
+                skills: projectSkills, 
+                clientId,  
+                clientName, 
+                clientEmail,
+                postedDate: new Date()
+            })
+            await newProject.save();
+            res.status(200).json({message: "Project added"});
+        }catch(err){
+            res.status(500).json({error: err.message});
+        }
+    })
+
 
     // make bid
 
-    app.post("/make-bid", async (req, res) => {
-      const {
-        clientId,
-        freelancerId,
-        projectId,
-        proposal,
-        bidAmount,
-        estimatedTime,
-      } = req.body;
-      try {
-        const freelancer = await User.findById(freelancerId);
-        const freelancerData = await Freelancer.findOne({
-          userId: freelancerId,
-        });
-        const project = await Project.findById(projectId);
-        const client = await User.findById(clientId);
+    app.post('/make-bid', async(req, res)=>{
+        const {clientId, freelancerId, projectId, proposal, bidAmount, estimatedTime} = req.body;
+        try{
 
-        const newApplication = new Application({
-          projectId,
-          clientId,
-          clientName: client.username,
-          clientEmail: client.email,
-          freelancerId,
-          freelancerName: freelancer.username,
-          freelancerEmail: freelancer.email,
-          freelancerSkills: freelancerData.skills,
-          title: project.title,
-          description: project.description,
-          budget: project.budget,
-          requiredSkills: project.skills,
-          proposal,
-          bidAmount,
-          estimatedTime,
-        });
+            const freelancer = await User.findById(freelancerId);
+            const freelancerData = await Freelancer.findOne({userId: freelancerId});
+            const project = await Project.findById(projectId);
+            const client = await User.findById(clientId);
 
-        const application = await newApplication.save();
+            const newApplication = new Application({
+                projectId,
+                clientId,
+                clientName: client.username,
+                clientEmail: client.email,
+                freelancerId,
+                freelancerName: freelancer.username,
+                freelancerEmail: freelancer.email,
+                freelancerSkills: freelancerData.skills,
+                title: project.title,
+                description: project.description,
+                budget: project.budget,
+                requiredSkills: project.skills,
+                proposal,
+                bidAmount,
+                estimatedTime
+            })
 
-        project.bids.push(freelancerId);
-        project.bidAmounts.push(parseInt(bidAmount));
+            const application = await newApplication.save();
 
-        console.log(application);
+            project.bids.push(freelancerId);
+            project.bidAmounts.push(parseInt(bidAmount));
 
-        if (application) {
-          freelancerData.applications.push(application._id);
+            console.log(application);
+
+            if(application){
+
+                freelancerData.applications.push(application._id)
+            }
+
+            await freelancerData.save();
+            await project.save();
+
+
+            res.status(200).json({message: "bidding successful"});
+        }catch(err){
+            console.log(err)
+            res.status(500).json({error: err.message});
         }
-        await freelancerData.save();
-        await project.save();
+    })
 
-        res.status(200).json({ message: "bidding successful" });
-      } catch (err) {
-        console.log(err);
-        res.status(500).json({ error: err.message });
-      }
-    });
 
-     // fetch all applications
-     app.get('/fetch-applications', async(req, res)=>{
+    // fetch all applications
+    app.get('/fetch-applications', async(req, res)=>{
         try{
 
             const applications = await Application.find();
@@ -236,8 +254,8 @@ mongoose
     })
 
 
-     // approve application
-     app.get('/approve-application/:id', async(req, res)=>{
+    // approve application
+    app.get('/approve-application/:id', async(req, res)=>{
         try{
 
             const application = await Application.findById(req.params.id);
@@ -258,6 +276,7 @@ mongoose
                 appli.status === 'Rejected';
                 await appli.save();
             })
+
             project.freelancerId = freelancer.userId;
             project.freelancerName = user.email;
             project.budget = application.bidAmount;
@@ -278,8 +297,8 @@ mongoose
         }
     })
 
-     // reject application
-     app.get('/reject-application/:id', async(req, res)=>{
+    // reject application
+    app.get('/reject-application/:id', async(req, res)=>{
         try{
 
             const application = await Application.findById(req.params.id);
@@ -299,6 +318,7 @@ mongoose
         }
     })
 
+
     // submit project
     app.post('/submit-project', async(req, res)=>{
         const {clientId, freelancerId, projectId, projectLink, manualLink, submissionDescription} = req.body;
@@ -307,7 +327,7 @@ mongoose
             const project = await Project.findById(projectId);
 
             project.projectLink = projectLink;
-            project.manualLink = manualLink;
+            project.manulaLink = manualLink;
             project.submissionDescription = submissionDescription;
             project.submission = true;
 
@@ -321,8 +341,8 @@ mongoose
     });
 
 
-      // approve submission
-      app.get('/approve-submission/:id', async(req, res)=>{
+    // approve submission
+    app.get('/approve-submission/:id', async(req, res)=>{
         try{
 
             const project = await Project.findById(req.params.id);
@@ -345,7 +365,7 @@ mongoose
         }
     });
 
-    
+
     // reject submission
     app.get('/reject-submission/:id', async(req, res)=>{
         try{
@@ -354,7 +374,7 @@ mongoose
 
             project.submission =  false;
             project.projectLink =  "";
-            project.manualLink =  "";
+            project.manulaLink =  "";
             project.submissionDescription =  "";
 
             await project.save();
@@ -366,8 +386,8 @@ mongoose
     });
 
 
-     // fetch all users
-     app.get('/fetch-users', async(req, res)=>{
+    // fetch all users
+    app.get('/fetch-users', async(req, res)=>{
         try{
 
             const users = await User.find();
@@ -379,7 +399,8 @@ mongoose
         }
     })
 
-     
+
+    
     // fetch chats
     app.get('/fetch-chats/:id', async(req, res)=>{
         try{
@@ -395,12 +416,8 @@ mongoose
         }
     })
 
-    app.listen(PORT, () => {
-        console.log(`Server is running on port ${PORT}`);
-      });
 
-  })
-  .catch((e)=> console.log(`Error in db connection ${e}`));
-
- 
-
+    server.listen(PORT, ()=>{
+        console.log(`Running @ ${PORT}`);
+    });
+}).catch((e)=> console.log(`Error in db connection ${e}`));

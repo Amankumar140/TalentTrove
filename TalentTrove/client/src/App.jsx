@@ -1,5 +1,3 @@
- 
-
 
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
@@ -21,6 +19,7 @@ import Admin from "./pages/admin/Admin";
 import AllApplications from "./pages/admin/AllApplications";
 import AllUsers from "./pages/admin/AllUsers";
 import AdminProjects from "./pages/admin/AdminProjects";
+
 
 function App() {
   return (
