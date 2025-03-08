@@ -61,9 +61,6 @@ Contributions are welcome! To contribute:
 3. Commit your changes and push to your fork.
 4. Open a pull request.
 
-## License
-This project is licensed under the MIT License.
-
 ## Contact
 For any queries, reach out to Aman Kumar at aman140426@gmail.com.
 
