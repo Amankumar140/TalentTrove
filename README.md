@@ -38,7 +38,8 @@ TalentTrove is an innovative freelance marketplace designed to connect professio
 Here are some screenshots showcasing the platform:
 
 ### Home Page
-![Home Page](screenshots/homepage.png)
+![Landing Page 1](ScreenShots/Screenshot%20(45).png)
+
 
 ### Project Dashboard
 ![Project Dashboard](screenshots/dashboard.png)
