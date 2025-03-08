@@ -25,7 +25,14 @@ TalentTrove is an innovative freelance marketplace designed to connect professio
    ```
 4. Start the development server:
    ```bash
+   cd server
    npm start
+   ```
+5. Start the frontend:
+   ```bash
+   cd client
+   npm install
+   npm run dev
    ```
 
 ## Tech Stack
@@ -42,10 +49,10 @@ Here are some screenshots showcasing the platform:
 
 
 ### Project Dashboard
-![Project Dashboard](screenshots/dashboard.png)
+![Project Dashboard](ScreenShots/Screenshot%20(48).png)
 
 ### Chat System
-![Chat System](screenshots/chat.png)
+![Client Dashboard](ScreenShots/Screenshot%20(52).png)
 
 ## Contributing
 Contributions are welcome! To contribute:
