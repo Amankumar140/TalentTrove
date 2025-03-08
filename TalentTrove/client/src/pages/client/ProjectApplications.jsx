@@ -82,7 +82,7 @@ const ProjectApplications = () => {
           <div key={application._id} className="bg-gray-800 p-4 rounded-lg shadow-md mb-3">
             <h4 className="text-xl font-semibold text-blue-300">{application.title}</h4>
             <p className="text-gray-400 mt-2">{application.description}</p>
-            <h6 className="text-lg font-medium text-blue-400 mt-2">Budget - ₹ {application.budget}</h6>
+            <h6 className="text-lg font-medium text-blue-400 mt-2">Budget - $ {application.budget}</h6>
 
             <div className="mt-3 flex flex-wrap gap-2 text-sm">
               <span className="font-semibold text-gray-300">Skills:</span>
@@ -98,7 +98,7 @@ const ProjectApplications = () => {
               ))}
             </div>
 
-            <h6 className="text-lg font-medium text-blue-400 mt-2">Proposed Budget - ₹ {application.bidAmount}</h6>
+            <h6 className="text-lg font-medium text-blue-400 mt-2">Proposed Budget - $ {application.bidAmount}</h6>
             <p className="text-gray-400 mt-2">Proposal: {application.proposal}</p>
 
             <div className="mt-3 flex items-center gap-4">

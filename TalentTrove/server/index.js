@@ -101,25 +101,40 @@ mongoose.connect("mongodb+srv://aman:amankr2003@freelancing.g8xvg.mongodb.net/?r
         }
     })
 
-    app.post('/update-freelancer', async(req, res)=>{
-        const {freelancerId, updateSkills, description} = req.body;
-        try{
-
+    
+    app.post('/update-freelancer', async (req, res) => {
+        try {
+            const { freelancerId, updateSkills, description } = req.body;
+    
+             
+            if (!freelancerId) {
+                return res.status(400).json({ error: "Freelancer ID is required" });
+            }
+    
+             
             const freelancer = await Freelancer.findById(freelancerId);
-
-            let skills = updateSkills.split(',');
-
+            if (!freelancer) {
+                return res.status(404).json({ error: "Freelancer not found" });
+            }
+    
+            
+            let skills = Array.isArray(updateSkills) ? updateSkills : updateSkills.split(',').map(skill => skill.trim());
+    
+            
             freelancer.skills = skills;
             freelancer.description = description;
-
+    
+            console.log("Updating freelancer:", freelancer);
+    
             await freelancer.save();
-
             res.status(200).json(freelancer);
-
-        }catch(err){
-            res.status(500).json({error: err.message});
+    
+        } catch (err) {
+            console.error("Update Error:", err);
+            res.status(500).json({ error: "Internal Server Error", details: err.message });
         }
-    })
+    });
+    
 
 
     // fetch project

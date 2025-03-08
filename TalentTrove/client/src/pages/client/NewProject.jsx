@@ -57,7 +57,7 @@ const NewProject = () => {
         </div>
         <div className="flex gap-4">
           <div className="w-1/2">
-            <label className="block text-gray-400 mb-1">Budget (₹)</label>
+            <label className="block text-gray-400 mb-1">Budget ($)</label>
             <input 
               type="number" 
               className="w-full p-2 rounded-md bg-gray-700 text-white focus:outline-none"
