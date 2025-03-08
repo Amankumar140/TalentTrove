@@ -13,7 +13,7 @@ TalentTrove is an innovative freelance marketplace designed to connect professio
 ## Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/talentrove.git
+   git clone https://github.com/Amankumar140/TalentTrove.git
    ```
 2. Navigate to the project directory:
    ```bash
@@ -34,6 +34,18 @@ TalentTrove is an innovative freelance marketplace designed to connect professio
 - **Database**: MongoDB
 - **Authentication**: JWT, OAuth
 
+## Screenshots
+Here are some screenshots showcasing the platform:
+
+### Home Page
+![Home Page](screenshots/homepage.png)
+
+### Project Dashboard
+![Project Dashboard](screenshots/dashboard.png)
+
+### Chat System
+![Chat System](screenshots/chat.png)
+
 ## Contributing
 Contributions are welcome! To contribute:
 1. Fork the repository.
@@ -45,5 +57,5 @@ Contributions are welcome! To contribute:
 This project is licensed under the MIT License.
 
 ## Contact
-For any queries, reach out to [Your Name] at your.email@example.com.
+For any queries, reach out to Aman Kumar at aman140426@gmail.com.
 
