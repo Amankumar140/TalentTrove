@@ -5,11 +5,22 @@ import { io } from "socket.io-client";
 
 export const GeneralContext = createContext();
 
+// ── Create a shared axios instance with auth header ──────────────────────────
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL,
+});
+
+// Attach JWT token to every request automatically
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 const GeneralContextProvider = ({ children }) => {
   const WS = import.meta.env.VITE_API_BASE_URL;
-
-  
-
 
   const navigate = useNavigate();
 
@@ -22,14 +33,17 @@ const GeneralContextProvider = ({ children }) => {
   useEffect(() => {
     const newSocket = io(WS, {
       transports: ["websocket", "polling"],
-      reconnection: true, // Enable auto-reconnect
-      reconnectionAttempts: 5, // Try reconnecting 5 times
-      reconnectionDelay: 3000, // Wait 3 seconds before reconnecting
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 3000,
     });
+
+    // Store socket immediately so children can attach listeners right away.
+    // Socket.IO client automatically queues emits until connected.
+    setSocket(newSocket);
 
     newSocket.on("connect", () => {
       console.log("Connected to WebSocket server:", newSocket.id);
-      setSocket(newSocket);
     });
 
     newSocket.on("connect_error", (err) => {
@@ -49,17 +63,20 @@ const GeneralContextProvider = ({ children }) => {
     try {
       const res = await axios.post(`${WS}/login`, { email, password });
 
-      localStorage.setItem("userId", res.data._id);
-      localStorage.setItem("usertype", res.data.usertype);
-      localStorage.setItem("username", res.data.username);
-      localStorage.setItem("email", res.data.email);
+      const { user, token } = res.data;
+
+      localStorage.setItem("token", token);
+      localStorage.setItem("userId", user._id);
+      localStorage.setItem("usertype", user.usertype);
+      localStorage.setItem("username", user.username);
+      localStorage.setItem("email", user.email);
 
       navigate(
-        res.data.usertype === "freelancer"
+        user.usertype === "freelancer"
           ? "/freelancer"
-          : res.data.usertype === "client"
+          : user.usertype === "client"
           ? "/client"
-          : res.data.usertype === "admin"
+          : user.usertype === "admin"
           ? "/admin"
           : "/"
       );
@@ -78,17 +95,20 @@ const GeneralContextProvider = ({ children }) => {
         password,
       });
 
-      localStorage.setItem("userId", res.data._id);
-      localStorage.setItem("usertype", res.data.usertype);
-      localStorage.setItem("username", res.data.username);
-      localStorage.setItem("email", res.data.email);
+      const { user, token } = res.data;
+
+      localStorage.setItem("token", token);
+      localStorage.setItem("userId", user._id);
+      localStorage.setItem("usertype", user.usertype);
+      localStorage.setItem("username", user.username);
+      localStorage.setItem("email", user.email);
 
       navigate(
-        res.data.usertype === "freelancer"
+        user.usertype === "freelancer"
           ? "/freelancer"
-          : res.data.usertype === "client"
+          : user.usertype === "client"
           ? "/client"
-          : res.data.usertype === "admin"
+          : user.usertype === "admin"
           ? "/admin"
           : "/"
       );
@@ -107,6 +127,7 @@ const GeneralContextProvider = ({ children }) => {
     <GeneralContext.Provider
       value={{
         socket,
+        api,
         login,
         register,
         logout,
@@ -125,4 +146,5 @@ const GeneralContextProvider = ({ children }) => {
   );
 };
 
+export { api };
 export default GeneralContextProvider;
