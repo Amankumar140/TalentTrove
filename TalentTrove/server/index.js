@@ -35,7 +35,7 @@ io.on("connection", (socket) =>{
 
 const PORT = 6001;
 
-mongoose.connect("mongodb+srv://aman:amankr2003@freelancing.g8xvg.mongodb.net/?retryWrites=true&w=majority&appName=freelancing",{
+mongoose.connect("mongodb+srv://@freelancing.g8xvg.mongodb.net/?retryWrites=true&w=majority&appName=freelancing",{
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(()=>{
