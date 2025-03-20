@@ -1,9 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
-import { GeneralContext } from '../../context/GeneralContext';
-
-const WS = import.meta.env.VITE_API_BASE_URL;
+import { GeneralContext, api } from '../../context/GeneralContext';
 
 const ProjectData = () => {
   const { socket } = useContext(GeneralContext);
@@ -38,18 +35,28 @@ const ProjectData = () => {
     load();
   }, [params.id]);
 
-  // Socket connection management
+  // Socket connection management — joins room on connect AND reconnect
   useEffect(() => {
     if (!socket) return;
 
-    socket.emit('join-chat-room', {
-      projectId: params.id,
-      freelancerId: localStorage.getItem('userId'),
-    });
+    const joinRoom = () => {
+      socket.emit('join-chat-room', {
+        projectId: params.id,
+        freelancerId: localStorage.getItem('userId'),
+      });
+    };
 
-    // FIX: server emits 'messages-updated', not 'new-message'
+    // Join immediately if already connected
+    if (socket.connected) {
+      joinRoom();
+    }
+
+    // Re-join on every (re)connection so room membership is restored
+    socket.on('connect', joinRoom);
+
     const handleMessagesUpdated = ({ chat, chats: chatsData }) => {
       const data = chat || chatsData;
+      console.log('[Chat] messages-updated received:', JSON.stringify(data?.messages?.length), data);
       if (data && Array.isArray(data.messages)) {
         setChats(data);
       }
@@ -58,11 +65,8 @@ const ProjectData = () => {
     socket.on('messages-updated', handleMessagesUpdated);
 
     return () => {
+      socket.off('connect', joinRoom);
       socket.off('messages-updated', handleMessagesUpdated);
-      socket.emit('leave-chat-room', {
-        projectId: params.id,
-        freelancerId: localStorage.getItem('userId'),
-      });
     };
   }, [socket, params.id]);
 
@@ -75,7 +79,7 @@ const ProjectData = () => {
 
   const fetchProject = async (id) => {
     try {
-      const response = await axios.get(`${WS}/fetch-project/${id}`); // FIX: single-line template literal
+      const response = await api.get(`/fetch-project/${id}`);
       setProject(response.data);
       setProjectId(response.data._id);
       setClientId(response.data.clientId);
@@ -88,7 +92,7 @@ const ProjectData = () => {
 
   const fetchChats = async () => {
     try {
-      const response = await axios.get(`${WS}/fetch-chats/${params.id}`); // FIX: single-line template literal
+      const response = await api.get(`/fetch-chats/${params.id}`);
       if (response.data && Array.isArray(response.data.messages)) {
         setChats(response.data);
       } else {
@@ -102,7 +106,7 @@ const ProjectData = () => {
 
   const handleBidding = async () => {
     try {
-      await axios.post(`${WS}/make-bid`, { // FIX: single-line template literal
+      await api.post('/make-bid', {
         clientId,
         freelancerId,
         projectId,
@@ -123,7 +127,7 @@ const ProjectData = () => {
 
   const handleProjectSubmission = async () => {
     try {
-      await axios.post(`${WS}/submit-project`, { // FIX: single-line template literal
+      await api.post('/submit-project', {
         clientId,
         freelancerId,
         projectId,
@@ -156,7 +160,8 @@ const ProjectData = () => {
 
       socket.emit('new-message', messageData);
       setMessage('');
-      // Real-time update handled by socket 'messages-updated' event (server now broadcasts to entire room)
+      // Fallback: fetch chats after a short delay in case socket broadcast misses us
+      setTimeout(() => fetchChats(), 500);
     } catch (err) {
       console.error('Error sending message:', err);
     }

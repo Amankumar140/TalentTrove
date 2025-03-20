@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
-const WS = import.meta.env.VITE_API_BASE_URL;
+import { api } from '../../context/GeneralContext';
 
 const AllProjects = () => {
   const navigate = useNavigate();
@@ -17,7 +15,7 @@ const AllProjects = () => {
 
   const fetchProjects = async () => {
     try {
-      const response = await axios.get(`${WS}/fetch-projects`); // FIX: single-line template literal
+      const response = await api.get('/fetch-projects');
       const data = response.data;
       setProjects(data);
       setDisplayProjects([...data].reverse());

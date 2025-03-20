@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-
-const WS = import.meta.env.VITE_API_BASE_URL;
+import { api } from '../../context/GeneralContext';
 
 const MyApplications = () => {
   const [applications, setApplications] = useState([]);
@@ -12,7 +10,7 @@ const MyApplications = () => {
 
   const fetchApplications = async () => {
     try {
-      const response = await axios.get(`${WS}/fetch-applications`); // FIX: single-line template literal
+      const response = await api.get('/fetch-applications');
       const myApps = response.data
         .filter((app) => app.freelancerId === localStorage.getItem('userId'))
         .reverse();

@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-
-const WS = import.meta.env.VITE_API_BASE_URL;
+import { api } from '../../context/GeneralContext';
 
 const Freelancer = () => {
   const [isDataUpdateOpen, setIsDataUpdateOpen] = useState(false);
@@ -25,7 +23,7 @@ const Freelancer = () => {
 
   const fetchUserData = async (id) => {
     try {
-      const response = await axios.get(`${WS}/fetch-freelancer/${id}`); // FIX: single-line template literal
+      const response = await api.get(`/fetch-freelancer/${id}`);
       if (response.data) {
         setFreelancerData(response.data);
         setFreelancerId(response.data._id);
@@ -41,7 +39,7 @@ const Freelancer = () => {
 
   const updateUserData = async () => {
     try {
-      const response = await axios.post(`${WS}/update-freelancer`, { // FIX: single-line template literal
+      const response = await api.post('/update-freelancer', {
         freelancerId,
         updateSkills,
         description: updateDescription,
@@ -61,7 +59,7 @@ const Freelancer = () => {
 
   const fetchApplications = async () => {
     try {
-      const response = await axios.get(`${WS}/fetch-applications`); // FIX: single-line template literal
+      const response = await api.get('/fetch-applications');
       setApplicationsCount(
         response.data.filter(
           (app) => app.freelancerId === localStorage.getItem('userId')
