@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
-const WS = import.meta.env.VITE_API_BASE_URL;
+import { api } from '../../context/GeneralContext';
 
 const NewProject = () => {
   const [title, setTitle] = useState('');
@@ -20,7 +18,7 @@ const NewProject = () => {
     }
     setLoading(true);
     try {
-      await axios.post(`${WS}/new-project`, { // FIX: single-line template literal
+      await api.post('/new-project', {
         title,
         description,
         budget: Number(budget),

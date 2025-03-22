@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-
-const WS = import.meta.env.VITE_API_BASE_URL;
+import { api } from '../../context/GeneralContext';
 
 const ProjectApplications = () => {
   const [applications, setApplications] = useState([]);
@@ -14,7 +12,7 @@ const ProjectApplications = () => {
 
   const fetchApplications = async () => {
     try {
-      const response = await axios.get(`${WS}/fetch-applications`); // FIX: single-line template literal
+      const response = await api.get('/fetch-applications');
       const filteredApplications = response.data.filter(
         (app) => app.clientId === localStorage.getItem('userId')
       );
@@ -33,7 +31,7 @@ const ProjectApplications = () => {
   const handleApprove = async (id) => {
     if (!window.confirm('Approve this application? Other bids will be rejected.')) return;
     try {
-      await axios.get(`${WS}/approve-application/${id}`); // FIX: single-line template literal
+      await api.get(`/approve-application/${id}`);
       alert('Application approved!');
       fetchApplications();
     } catch (err) {
@@ -43,7 +41,7 @@ const ProjectApplications = () => {
 
   const handleReject = async (id) => {
     try {
-      await axios.get(`${WS}/reject-application/${id}`); // FIX: single-line template literal
+      await api.get(`/reject-application/${id}`);
       alert('Application rejected.');
       fetchApplications();
     } catch (err) {
