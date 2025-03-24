@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-
-const WS = import.meta.env.VITE_API_BASE_URL;
+import { api } from '../../context/GeneralContext';
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -21,7 +19,7 @@ const Admin = () => {
   // FIX: was using process.env.REACT_APP_API_BASE_URL (CRA syntax) in a Vite project
   const fetchProjects = async () => {
     try {
-      const response = await axios.get(`${WS}/fetch-projects`);
+      const response = await api.get('/fetch-projects');
       setProjectsCount(response.data.length);
       setCompletedProsCount(response.data.filter((p) => p.status === 'Completed').length);
     } catch (err) {
@@ -32,7 +30,7 @@ const Admin = () => {
   // FIX: was using process.env.REACT_APP_API_BASE_URL
   const fetchApplications = async () => {
     try {
-      const response = await axios.get(`${WS}/fetch-applications`);
+      const response = await api.get('/fetch-applications');
       setApplicationsCount(response.data.length);
     } catch (err) {
       console.error(err);
@@ -42,7 +40,7 @@ const Admin = () => {
   // FIX: was broken multi-line template literal
   const fetchUsers = async () => {
     try {
-      const response = await axios.get(`${WS}/fetch-users`);
+      const response = await api.get('/fetch-users');
       setUsersCount(response.data.length);
     } catch (err) {
       console.error(err);

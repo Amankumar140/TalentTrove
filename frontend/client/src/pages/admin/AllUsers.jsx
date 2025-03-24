@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-
-const WS = import.meta.env.VITE_API_BASE_URL;
+import { api } from '../../context/GeneralContext';
 
 const AllUsers = () => {
   const [users, setUsers] = useState([]);
@@ -12,7 +10,7 @@ const AllUsers = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get(`${WS}/fetch-users`); // FIX: single-line template literal
+      const response = await api.get('/fetch-users');
       setUsers(response.data);
     } catch (err) {
       console.error(err);
