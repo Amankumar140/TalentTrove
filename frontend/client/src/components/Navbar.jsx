@@ -1,11 +1,12 @@
 
 import React, { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { GeneralContext } from "../context/GeneralContext";
 import { FaBars, FaTimes } from "react-icons/fa";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { logout } = useContext(GeneralContext);
   const usertype = localStorage.getItem("usertype");
   const [isOpen, setIsOpen] = useState(false);
@@ -34,43 +35,80 @@ const Navbar = () => {
 
   const handleNavigate = (path) => {
     navigate(path);
-    setIsOpen(false); // Close the menu after clicking
+    setIsOpen(false);
   };
 
+  const isActive = (path) => location.pathname === path;
+
   return (
-    <nav className="w-full bg-black shadow-lg  ">
-      <div className="flex justify-between items-center py-4 px-6 md:px-10 text-white">
-        
+    <nav className="sticky top-0 z-50 w-full bg-surface-50/80 backdrop-blur-xl border-b border-white/[0.06]">
+      <div className="max-w-7xl mx-auto flex justify-between items-center py-3 px-6">
         {/* Logo */}
-        <h3 className="text-xl md:text-2xl font-bold text-blue-300">
-          TalentTrove {usertype === "admin" && "(Admin)"}
+        <h3
+          className="text-xl font-bold bg-gradient-to-r from-accent-purple to-accent-blue bg-clip-text text-transparent cursor-pointer"
+          onClick={() => handleNavigate(menuItems[usertype]?.[0]?.path || "/")}
+        >
+          TalentTrove {usertype === "admin" && <span className="text-xs text-gray-500 font-normal ml-1">(Admin)</span>}
         </h3>
 
         {/* Mobile Menu Icon */}
-        <div className="md:hidden cursor-pointer" onClick={() => setIsOpen(!isOpen)}>
-          {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+        <div
+          className="md:hidden cursor-pointer text-gray-400 hover:text-white transition-colors"
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          {isOpen ? <FaTimes size={22} /> : <FaBars size={22} />}
         </div>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex space-x-6 text-gray-300 ">
+        <div className="hidden md:flex items-center gap-1">
           {menuItems[usertype]?.map((item) => (
-            <p key={item.path} onClick={() => handleNavigate(item.path)} className="hover:text-white cursor-pointer">
+            <button
+              key={item.path}
+              onClick={() => handleNavigate(item.path)}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                isActive(item.path)
+                  ? "bg-accent-purple/10 text-accent-purple"
+                  : "text-gray-400 hover:text-white hover:bg-white/[0.04]"
+              }`}
+            >
               {item.label}
-            </p>
+            </button>
           ))}
-          <p onClick={logout} className="hover:text-red-400 cursor-pointer">Logout</p>
+          <div className="w-px h-6 bg-white/[0.08] mx-2"></div>
+          <button
+            onClick={logout}
+            className="px-4 py-2 rounded-lg text-sm font-medium text-gray-400 hover:text-red-400 hover:bg-red-400/[0.06] transition-all duration-200"
+          >
+            Logout
+          </button>
         </div>
       </div>
 
       {/* Mobile Dropdown Menu */}
       {isOpen && (
-        <div className="md:hidden bg-black text-gray-300 flex flex-col items-center py-4 space-y-3 border-t border-gray-700">
-          {menuItems[usertype]?.map((item) => (
-            <p key={item.path} onClick={() => handleNavigate(item.path)} className="hover:text-white cursor-pointer">
-              {item.label}
-            </p>
-          ))}
-          <p onClick={logout} className="hover:text-red-400 cursor-pointer">Logout</p>
+        <div className="md:hidden bg-surface-100/95 backdrop-blur-xl border-t border-white/[0.06] animate-slide-down">
+          <div className="flex flex-col py-2 px-4">
+            {menuItems[usertype]?.map((item) => (
+              <button
+                key={item.path}
+                onClick={() => handleNavigate(item.path)}
+                className={`px-4 py-3 rounded-lg text-sm font-medium text-left transition-all duration-200 ${
+                  isActive(item.path)
+                    ? "bg-accent-purple/10 text-accent-purple"
+                    : "text-gray-400 hover:text-white hover:bg-white/[0.04]"
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+            <div className="h-px bg-white/[0.06] my-1"></div>
+            <button
+              onClick={logout}
+              className="px-4 py-3 rounded-lg text-sm font-medium text-left text-gray-400 hover:text-red-400 hover:bg-red-400/[0.06] transition-all duration-200"
+            >
+              Logout
+            </button>
+          </div>
         </div>
       )}
     </nav>

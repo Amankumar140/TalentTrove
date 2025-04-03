@@ -1,9 +1,6 @@
 
-
-
 import React, { useContext } from "react";
 import { GeneralContext } from "../context/GeneralContext";
-import { FaGoogle } from "react-icons/fa";
 
 const Login = ({ setAuthType }) => {
   const { setEmail, setPassword, login } = useContext(GeneralContext);
@@ -14,56 +11,62 @@ const Login = ({ setAuthType }) => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-[#0d0d12] text-white px-6 sm:px-4">
-      <div className="bg-[#11111a] p-6 sm:p-8 rounded-2xl shadow-lg w-full max-w-sm sm:max-w-md md:max-w-lg relative overflow-hidden">
-        
-        {/* Floating Gradient Circles */}
-        <div className="absolute top-[-40px] left-[-20px] w-32 h-32 sm:w-40 sm:h-40 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full blur-2xl opacity-30"></div>
-        <div className="absolute top-5 right-[-15px] w-14 h-14 sm:w-16 sm:h-16 bg-gray-600 rounded-full blur-lg opacity-40"></div>
+      <div className="glass-card gradient-border p-8 sm:p-10 w-full max-w-md relative overflow-hidden animate-scale-in">
+        {/* Background glow */}
+        <div className="absolute -top-20 -left-20 w-40 h-40 bg-accent-purple/20 rounded-full blur-3xl animate-glow-pulse"></div>
+        <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-accent-blue/15 rounded-full blur-3xl animate-glow-pulse" style={{animationDelay: '1.5s'}}></div>
 
-        <h2 className="text-xl sm:text-2xl font-semibold text-center mb-5">Sign In</h2>
- 
+        {/* Header */}
+        <div className="text-center mb-8 relative z-10">
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+            Welcome Back
+          </h2>
+          <p className="text-gray-500 text-sm mt-2">Sign in to your account</p>
+        </div>
 
-        {/* Email Input */}
-        <input
-          type="email"
-          placeholder="E-mail"
-          className="w-full px-4 py-2 bg-transparent border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 mb-3 text-sm sm:text-base"
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        {/* Form */}
+        <div className="space-y-4 relative z-10">
+          <div>
+            <label className="section-label mb-2 block">Email</label>
+            <input
+              type="email"
+              placeholder="you@example.com"
+              className="form-input"
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
 
-        {/* Password Input */}
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full px-4 py-2 bg-transparent border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 mb-4 text-sm sm:text-base"
-          onChange={(e) => setPassword(e.target.value)}
-        />
+          <div>
+            <label className="section-label mb-2 block">Password</label>
+            <input
+              type="password"
+              placeholder="••••••••"
+              className="form-input"
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
 
-        {/* Sign In Button */}
-        <button
-          type="submit"
-          className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-80 transition duration-300 text-white py-2 rounded-md font-semibold text-sm sm:text-base"
-          onClick={handleLogin}
-        >
-          Sign In
-        </button>
+          <button
+            type="submit"
+            className="btn-primary w-full mt-2"
+            onClick={handleLogin}
+          >
+            Sign In
+          </button>
+        </div>
 
-        {/* Register & Forgot Password Links */}
-        <p className="text-center text-gray-400 mt-4 text-sm sm:text-base">
+        {/* Footer */}
+        <p className="text-center text-gray-500 mt-6 text-sm relative z-10">
           Don't have an account?{" "}
           <span
             onClick={() => setAuthType("register")}
-            className="text-white font-semibold cursor-pointer hover:underline"
+            className="text-accent-purple font-semibold cursor-pointer hover:text-purple-300 transition-colors"
           >
             Create an account
           </span>
         </p>
-         
       </div>
-    </div>
   );
 };
 
 export default Login;
-
