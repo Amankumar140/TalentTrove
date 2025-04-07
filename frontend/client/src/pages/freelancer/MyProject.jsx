@@ -34,49 +34,51 @@ const MyProjects = () => {
     }
   };
 
-  const statusColor = {
-    Available: 'text-green-400',
-    Assigned:  'text-yellow-400',
-    Completed: 'text-blue-400',
+  const statusClass = {
+    Available: 'status-available',
+    Assigned:  'status-assigned',
+    Completed: 'status-completed',
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-center mb-6">
-          <h3 className="text-2xl font-bold">My Projects</h3>
+    <div className="min-h-screen bg-surface p-6 animate-fade-in">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+          <h3 className="page-title">My Projects</h3>
           <select
-            className="bg-gray-800 text-white px-4 py-2 rounded-md border border-gray-600 mt-3 md:mt-0"
+            className="form-input w-auto min-w-[160px] cursor-pointer"
             onChange={(e) => handleFilterChange(e.target.value)}
           >
-            <option value="">All Statuses</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Completed">Completed</option>
+            <option value="" className="bg-surface-200">All Statuses</option>
+            <option value="In Progress" className="bg-surface-200">In Progress</option>
+            <option value="Completed" className="bg-surface-200">Completed</option>
           </select>
         </div>
 
         {displayProjects.length === 0 ? (
-          <p className="text-gray-400">No projects assigned to you yet.</p>
+          <div className="glass-card p-12 text-center">
+            <p className="text-gray-500">No projects assigned to you yet.</p>
+          </div>
         ) : (
-          <div className="space-y-6">
-            {displayProjects.map((project) => (
+          <div className="space-y-4">
+            {displayProjects.map((project, i) => (
               <div
                 key={project._id}
-                className="bg-gray-800 p-6 rounded-lg shadow-lg hover:bg-gray-700 cursor-pointer transition"
+                className="project-card animate-slide-up"
+                style={{animationDelay: `${i * 0.05}s`}}
                 onClick={() => navigate(`/project/${project._id}`)}
               >
-                <div className="flex justify-between items-center">
-                  <h3 className="text-xl font-semibold">{project.title}</h3>
-                  <p className="text-gray-400 text-sm">{new Date(project.postedDate).toLocaleDateString()}</p>
+                <div className="flex justify-between items-start">
+                  <h3 className="text-lg font-semibold text-white">{project.title}</h3>
+                  <span className="text-xs text-gray-500">{new Date(project.postedDate).toLocaleDateString()}</span>
                 </div>
-                <h5 className="text-green-400 text-lg font-semibold mt-2">Budget: ${project.budget}</h5>
-                <p className="text-gray-300 mt-2">{project.description}</p>
-                <p className="mt-3 text-sm">
-                  Status:{' '}
-                  <span className={`font-bold ${statusColor[project.status] || 'text-white'}`}>
+                <p className="text-emerald-400 font-semibold mt-2">${project.budget}</p>
+                <p className="text-gray-400 text-sm mt-2 line-clamp-2">{project.description}</p>
+                <div className="mt-4 flex items-center gap-3">
+                  <span className={statusClass[project.status] || 'status-available'}>
                     {project.status}
                   </span>
-                </p>
+                </div>
               </div>
             ))}
           </div>

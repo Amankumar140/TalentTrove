@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../context/GeneralContext';
+import { FaProjectDiagram, FaCheckCircle, FaFileAlt, FaDollarSign } from 'react-icons/fa';
 
 const Freelancer = () => {
   const [isDataUpdateOpen, setIsDataUpdateOpen] = useState(false);
@@ -70,67 +71,85 @@ const Freelancer = () => {
     }
   };
 
+  const statCards = freelancerData ? [
+    { title: 'Current Projects', count: freelancerData.currentProjects.length, link: '/my-projects', icon: <FaProjectDiagram />, color: 'from-purple-500 to-indigo-600' },
+    { title: 'Completed', count: freelancerData.completedProjects.length, link: '/my-projects', icon: <FaCheckCircle />, color: 'from-emerald-500 to-teal-600' },
+    { title: 'Applications', count: applicationsCount.length, link: '/myApplications', icon: <FaFileAlt />, color: 'from-blue-500 to-cyan-600' },
+    { title: 'Funds', count: `$${freelancerData.funds}`, link: '#', icon: <FaDollarSign />, color: 'from-amber-500 to-orange-600' },
+  ] : [];
+
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-6">
+    <div className="min-h-screen bg-surface p-6 animate-fade-in">
       {freelancerData ? (
-        <div className="max-w-5xl mx-auto space-y-6">
+        <div className="max-w-6xl mx-auto space-y-8">
+          {/* Welcome */}
+          <div>
+            <h2 className="page-title">Welcome back, {localStorage.getItem('username') || 'Freelancer'} 👋</h2>
+            <p className="text-gray-500 text-sm mt-1">Here's an overview of your freelance journey</p>
+          </div>
+
           {/* Stats Section */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-            {[
-              { title: 'Current Projects',   count: freelancerData.currentProjects.length,   link: '/my-projects'    },
-              { title: 'Completed Projects',  count: freelancerData.completedProjects.length,  link: '/my-projects'    },
-              { title: 'Applications',        count: applicationsCount.length,                  link: '/myApplications' },
-              { title: 'Funds Available',     count: `$${freelancerData.funds}`,               link: '#'               },
-            ].map((item, index) => (
-              <div key={index} className="bg-gray-800 p-4 rounded-lg shadow-md text-center">
-                <h4 className="text-lg font-semibold">{item.title}</h4>
-                <p className="text-2xl font-bold mt-2">{item.count}</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {statCards.map((item, index) => (
+              <div
+                key={index}
+                className="stat-card group cursor-pointer"
+                onClick={() => item.link !== '#' && navigate(item.link)}
+              >
+                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${item.color} flex items-center justify-center text-white text-sm mb-3 mx-auto`}>
+                  {item.icon}
+                </div>
+                <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">{item.title}</p>
+                <p className="text-3xl font-bold mt-1 text-white">{item.count}</p>
                 {item.link !== '#' && (
-                  <button
-                    onClick={() => navigate(item.link)}
-                    className="mt-3 bg-indigo-600 px-4 py-2 rounded-lg hover:bg-indigo-700 text-sm"
-                  >
-                    View Details
-                  </button>
+                  <p className="text-xs text-accent-purple mt-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                    View Details →
+                  </p>
                 )}
               </div>
             ))}
           </div>
 
           {/* Profile Details */}
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
+          <div className="glass-card p-6 md:p-8">
             {!isDataUpdateOpen ? (
-              <div className="space-y-4">
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold text-white">Profile</h3>
+                  <button
+                    onClick={() => setIsDataUpdateOpen(true)}
+                    className="btn-primary text-xs px-4 py-2"
+                  >
+                    Edit Profile
+                  </button>
+                </div>
+
                 <div>
-                  <h4 className="text-lg font-semibold">My Skills</h4>
-                  <div className="flex flex-wrap gap-2 mt-2">
+                  <p className="section-label mb-2">Skills</p>
+                  <div className="flex flex-wrap gap-2">
                     {skills.length > 0 ? (
                       skills.map((skill) => (
-                        <span key={skill} className="bg-indigo-600 px-3 py-1 rounded text-sm">{skill}</span>
+                        <span key={skill} className="skill-pill">{skill}</span>
                       ))
                     ) : (
-                      <p className="text-gray-400">No skills added yet</p>
+                      <p className="text-gray-500 text-sm">No skills added yet</p>
                     )}
                   </div>
                 </div>
+
                 <div>
-                  <h4 className="text-lg font-semibold">About Me</h4>
-                  <p className="text-gray-300 mt-2">{description || 'No description added yet'}</p>
+                  <p className="section-label mb-2">About Me</p>
+                  <p className="text-gray-300 text-sm leading-relaxed">{description || 'No description added yet'}</p>
                 </div>
-                <button
-                  onClick={() => setIsDataUpdateOpen(true)}
-                  className="bg-green-600 px-4 py-2 rounded-lg hover:bg-green-700"
-                >
-                  Edit Profile
-                </button>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-5">
+                <h3 className="text-lg font-semibold text-white">Edit Profile</h3>
                 <div>
-                  <label className="text-lg font-semibold block mb-1">My Skills</label>
+                  <label className="section-label mb-2 block">Skills</label>
                   <input
                     type="text"
-                    className="w-full mt-1 p-2 rounded bg-gray-700 border border-gray-600 text-white"
+                    className="form-input"
                     placeholder="Enter skills (comma separated)"
                     value={updateSkills.join(', ')}
                     onChange={(e) =>
@@ -139,9 +158,9 @@ const Freelancer = () => {
                   />
                 </div>
                 <div>
-                  <label className="text-lg font-semibold block mb-1">About Me</label>
+                  <label className="section-label mb-2 block">About Me</label>
                   <textarea
-                    className="w-full mt-1 p-2 rounded bg-gray-700 border border-gray-600 text-white"
+                    className="form-input resize-none"
                     placeholder="Tell clients about yourself"
                     rows={4}
                     value={updateDescription}
@@ -149,12 +168,12 @@ const Freelancer = () => {
                   />
                 </div>
                 <div className="flex gap-3">
-                  <button onClick={updateUserData} className="bg-green-600 px-4 py-2 rounded-lg hover:bg-green-700">
+                  <button onClick={updateUserData} className="btn-emerald">
                     Save Changes
                   </button>
                   <button
                     onClick={() => setIsDataUpdateOpen(false)}
-                    className="bg-gray-600 px-4 py-2 rounded-lg hover:bg-gray-500"
+                    className="px-6 py-2.5 rounded-xl text-sm font-semibold text-gray-400 border border-white/[0.1] hover:border-white/[0.2] hover:bg-white/[0.04] transition-all"
                   >
                     Cancel
                   </button>
@@ -165,7 +184,7 @@ const Freelancer = () => {
         </div>
       ) : (
         <div className="flex items-center justify-center min-h-[50vh]">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+          <div className="animate-spin rounded-full h-10 w-10 border-2 border-accent-purple border-t-transparent"></div>
         </div>
       )}
     </div>

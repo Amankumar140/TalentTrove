@@ -20,61 +20,68 @@ const MyApplications = () => {
     }
   };
 
-  const statusColor = {
-    Pending:  'text-yellow-400',
-    Accepted: 'text-green-400',
-    Rejected: 'text-red-400',
+  const statusClass = {
+    Pending:  'status-pending',
+    Accepted: 'status-accepted',
+    Rejected: 'status-rejected',
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-6">
-      <h3 className="text-2xl font-bold mb-6 text-center">My Applications</h3>
+    <div className="min-h-screen bg-surface p-6 animate-fade-in">
+      <div className="max-w-6xl mx-auto">
+        <h3 className="page-title text-center mb-8">My Applications</h3>
 
-      {applications.length === 0 ? (
-        <p className="text-gray-400 text-center">No applications submitted yet.</p>
-      ) : (
-        <div className="max-w-6xl mx-auto grid gap-6">
-          {applications.map((application) => (
-            <div key={application._id} className="bg-gray-800 p-6 rounded-lg shadow-lg hover:bg-gray-700 transition">
-              <div className="flex flex-col md:flex-row justify-between">
-                <div className="md:w-1/2">
-                  <h4 className="text-xl font-semibold text-green-400">{application.title}</h4>
-                  <p className="text-gray-300 mt-2">{application.description}</p>
-                  <div className="mt-4">
-                    <h5 className="text-lg font-semibold">Required Skills</h5>
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {application.requiredSkills.map((skill) => (
-                        <span key={skill} className="bg-indigo-600 text-white px-2 py-1 rounded text-sm">{skill}</span>
-                      ))}
+        {applications.length === 0 ? (
+          <div className="glass-card p-12 text-center">
+            <p className="text-gray-500">No applications submitted yet.</p>
+          </div>
+        ) : (
+          <div className="grid gap-5">
+            {applications.map((application, i) => (
+              <div key={application._id} className="glass-card p-6 animate-slide-up" style={{animationDelay: `${i * 0.05}s`}}>
+                <div className="flex flex-col md:flex-row gap-6">
+                  {/* Project Info */}
+                  <div className="md:w-1/2 space-y-3">
+                    <div className="flex items-start justify-between">
+                      <h4 className="text-lg font-semibold text-white">{application.title}</h4>
+                      <span className={statusClass[application.status] || 'status-pending'}>
+                        {application.status}
+                      </span>
                     </div>
+                    <p className="text-gray-400 text-sm">{application.description}</p>
+                    <div>
+                      <p className="section-label mb-2">Required Skills</p>
+                      <div className="flex flex-wrap gap-2">
+                        {application.requiredSkills.map((skill) => (
+                          <span key={skill} className="skill-pill">{skill}</span>
+                        ))}
+                      </div>
+                    </div>
+                    <p className="text-emerald-400 font-semibold">Budget: ${application.budget}</p>
                   </div>
-                  <h6 className="mt-4 text-lg font-semibold">Project Budget: ${application.budget}</h6>
-                </div>
 
-                <div className="md:w-1/2 mt-6 md:mt-0 md:pl-6 border-l border-gray-600">
-                  <h5 className="text-lg font-semibold">Your Proposal</h5>
-                  <p className="text-gray-300 mt-2">{application.proposal}</p>
-                  <div className="mt-4">
-                    <h5 className="text-lg font-semibold">Your Skills</h5>
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {application.freelancerSkills.map((skill) => (
-                        <span key={skill} className="bg-green-700 text-white px-2 py-1 rounded text-sm">{skill}</span>
-                      ))}
+                  {/* Your Proposal */}
+                  <div className="md:w-1/2 md:border-l border-white/[0.06] md:pl-6 space-y-3">
+                    <p className="section-label">Your Proposal</p>
+                    <p className="text-gray-300 text-sm">{application.proposal}</p>
+                    <div>
+                      <p className="section-label mb-2">Your Skills</p>
+                      <div className="flex flex-wrap gap-2">
+                        {application.freelancerSkills.map((skill) => (
+                          <span key={skill} className="skill-pill" style={{background: 'rgba(16, 185, 129, 0.15)', color: '#6ee7b7', borderColor: 'rgba(16, 185, 129, 0.2)'}}>
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
                     </div>
+                    <p className="text-accent-blue font-semibold">Your Bid: ${application.bidAmount}</p>
                   </div>
-                  <h6 className="mt-4 text-lg font-semibold">Your Bid: ${application.bidAmount}</h6>
-                  <h6 className="mt-2 text-lg font-semibold">
-                    Status:{' '}
-                    <span className={statusColor[application.status] || 'text-gray-300'}>
-                      {application.status}
-                    </span>
-                  </h6>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

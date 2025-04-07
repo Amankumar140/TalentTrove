@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../context/GeneralContext';
+import { FaSearch } from 'react-icons/fa';
 
 const AllProjects = () => {
   const navigate = useNavigate();
@@ -27,7 +28,6 @@ const AllProjects = () => {
       setAllSkills([...skillsSet]);
     } catch (error) {
       console.error('Failed to fetch projects:', error);
-      // FIX: removed recursive fetchProjects() call that caused infinite retry loop
     }
   };
 
@@ -51,56 +51,67 @@ const AllProjects = () => {
   }, [categoryFilter, projects]);
 
   return (
-    <div className="bg-gray-900 min-h-screen text-white p-6">
+    <div className="bg-surface min-h-screen p-6 animate-fade-in">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-6">
         {/* Filters */}
-        <div className="md:col-span-3 bg-gray-800 p-4 rounded-lg shadow-lg">
-          <h3 className="text-xl font-bold">Filters</h3>
-          <hr className="my-2 border-gray-600" />
-          <h5 className="text-lg font-semibold">Skills</h5>
-          <div className="mt-2 space-y-2">
-            {allSkills.map((skill) => (
-              <div key={skill} className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  value={skill}
-                  onChange={handleCategoryCheckBox}
-                  className="h-4 w-4 text-indigo-600 border-gray-300 rounded"
-                />
-                <label className="text-sm">{skill}</label>
-              </div>
-            ))}
+        <div className="md:col-span-3">
+          <div className="glass-card p-5 sticky top-20">
+            <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+              <FaSearch className="text-accent-purple text-xs" /> Filters
+            </h3>
+            <div className="h-px bg-white/[0.06] my-3"></div>
+            <p className="section-label mb-3">Skills</p>
+            <div className="space-y-2">
+              {allSkills.map((skill) => (
+                <label key={skill} className="flex items-center gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    value={skill}
+                    onChange={handleCategoryCheckBox}
+                    className="w-4 h-4 rounded border-gray-600 bg-surface-300 text-accent-purple focus:ring-accent-purple focus:ring-offset-0 cursor-pointer"
+                  />
+                  <span className="text-sm text-gray-400 group-hover:text-white transition-colors">{skill}</span>
+                </label>
+              ))}
+            </div>
+            {categoryFilter.length > 0 && (
+              <p className="text-xs text-gray-500 mt-3">{displayProjects.length} project{displayProjects.length !== 1 ? 's' : ''} found</p>
+            )}
           </div>
         </div>
 
         {/* Projects List */}
         <div className="md:col-span-9">
-          <h3 className="text-2xl font-bold mb-4">All Projects</h3>
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="page-title">All Projects</h3>
+            <span className="text-sm text-gray-500">{displayProjects.length} projects</span>
+          </div>
           {displayProjects.length === 0 ? (
-            <p className="text-gray-400">No projects found.</p>
+            <div className="glass-card p-12 text-center">
+              <p className="text-gray-500">No projects found.</p>
+            </div>
           ) : (
             <div className="space-y-4">
-              {displayProjects.map((project) => (
+              {displayProjects.map((project, i) => (
                 <div
                   key={project._id}
-                  className="bg-gray-800 p-6 rounded-lg shadow-lg hover:bg-gray-700 cursor-pointer transition"
+                  className="project-card animate-slide-up"
+                  style={{animationDelay: `${i * 0.05}s`}}
                   onClick={() => navigate(`/project/${project._id}`)}
                 >
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
-                    <h3 className="text-xl font-semibold">{project.title}</h3>
-                    <p className="text-gray-400 text-sm">{new Date(project.postedDate).toLocaleDateString()}</p>
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                    <h3 className="text-lg font-semibold text-white">{project.title}</h3>
+                    <span className="text-xs text-gray-500">{new Date(project.postedDate).toLocaleDateString()}</span>
                   </div>
-                  <h5 className="text-green-400 text-lg font-semibold mt-2">Budget: ${project.budget}</h5>
-                  <p className="text-gray-300 mt-2">{project.description}</p>
+                  <p className="text-emerald-400 font-semibold mt-2">${project.budget}</p>
+                  <p className="text-gray-400 text-sm mt-2 line-clamp-2">{project.description}</p>
                   <div className="flex flex-wrap mt-3 gap-2">
                     {project.skills.map((skill) => (
-                      <span key={skill} className="bg-indigo-600 text-white px-2 py-1 rounded text-sm">
-                        {skill}
-                      </span>
+                      <span key={skill} className="skill-pill">{skill}</span>
                     ))}
                   </div>
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-4 text-gray-400 text-sm">
-                    <p>{project.bids.length} bids</p>
+                  <div className="flex justify-between items-center mt-4 text-xs text-gray-500">
+                    <span>{project.bids.length} bid{project.bids.length !== 1 ? 's' : ''}</span>
                     <span>
                       Avg Bid: $
                       {project.bids.length > 0
