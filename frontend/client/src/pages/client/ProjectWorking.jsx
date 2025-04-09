@@ -15,7 +15,6 @@ const ProjectWorking = () => {
     fetchProject(params.id);
   }, [params.id]);
 
-  // Socket connection management — joins room on connect AND reconnect
   useEffect(() => {
     if (!socket) return;
 
@@ -23,16 +22,10 @@ const ProjectWorking = () => {
       socket.emit('join-chat-room-client', { projectId: params.id });
     };
 
-    // Join immediately if already connected
-    if (socket.connected) {
-      joinRoom();
-    }
-
-    // Re-join on every (re)connection so room membership is restored
+    if (socket.connected) joinRoom();
     socket.on('connect', joinRoom);
 
     const handleMessagesUpdated = ({ chat }) => {
-      console.log('[Client Chat] messages-updated received:', JSON.stringify(chat?.messages?.length), chat);
       if (chat && Array.isArray(chat.messages)) {
         setChats(chat);
       }
@@ -46,7 +39,6 @@ const ProjectWorking = () => {
     };
   }, [socket, params.id]);
 
-  // Auto-scroll to bottom on new messages
   useEffect(() => {
     if (chatEndRef.current) {
       chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -104,27 +96,30 @@ const ProjectWorking = () => {
 
   const handleMessageSend = async () => {
     if (!message.trim() || !socket) return;
-
     try {
-      const messageData = {
+      socket.emit('new-message', {
         projectId: params.id,
         senderId: localStorage.getItem('userId'),
         message: message.trim(),
         time: new Date().toISOString(),
-      };
-      socket.emit('new-message', messageData);
+      });
       setMessage('');
-      // Fallback: fetch chats after a short delay in case socket broadcast misses us
       setTimeout(() => fetchChats(), 500);
     } catch (err) {
       console.error('Error sending message:', err);
     }
   };
 
+  const statusClass = {
+    Available: 'status-available',
+    Assigned: 'status-assigned',
+    Completed: 'status-completed',
+  };
+
   if (loading) {
     return (
-      <div className="p-6 bg-gray-900 min-h-screen text-white flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+      <div className="p-6 bg-surface min-h-screen text-white flex items-center justify-center">
+        <div className="animate-spin rounded-full h-10 w-10 border-2 border-accent-blue border-t-transparent"></div>
       </div>
     );
   }
@@ -132,92 +127,98 @@ const ProjectWorking = () => {
   return (
     <>
       {project ? (
-        <div className="p-6 bg-gray-900 min-h-screen text-white">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="p-6 bg-surface min-h-screen text-white animate-fade-in">
+          <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Project Details */}
-            <div className="bg-gray-800 p-6 rounded-xl shadow-lg">
-              <h3 className="text-xl font-semibold">{project.title}</h3>
-              <p className="mt-2 text-gray-300">{project.description}</p>
-              <div className="mt-4">
-                <h5 className="text-lg font-medium">Required Skills</h5>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {project.skills && project.skills.map((skill) => (
-                    <span key={skill} className="px-3 py-1 bg-purple-600 rounded-full text-sm">{skill}</span>
-                  ))}
-                </div>
-              </div>
-              <div className="mt-4">
-                <h5 className="text-lg font-medium">Budget</h5>
-                <h6 className="text-green-400 font-semibold">${project.budget}</h6>
-              </div>
-              <div className="mt-4">
-                <span className={`inline-block px-3 py-1 rounded text-sm font-semibold ${
-                  project.status === 'Assigned' ? 'bg-yellow-700' : 'bg-green-700'
-                }`}>
+            <div className="glass-card p-6">
+              <div className="flex items-start justify-between mb-4">
+                <h3 className="text-xl font-bold text-white">{project.title}</h3>
+                <span className={statusClass[project.status] || 'status-available'}>
                   {project.status}
                 </span>
               </div>
+              <p className="text-gray-400 text-sm leading-relaxed">{project.description}</p>
+              <div className="mt-4">
+                <p className="section-label mb-2">Required Skills</p>
+                <div className="flex flex-wrap gap-2">
+                  {project.skills && project.skills.map((skill) => (
+                    <span key={skill} className="skill-pill">{skill}</span>
+                  ))}
+                </div>
+              </div>
+              <div className="mt-4 pt-4 border-t border-white/[0.06]">
+                <p className="section-label mb-1">Budget</p>
+                <p className="text-2xl font-bold text-emerald-400">${project.budget}</p>
+              </div>
               {project.freelancerName && (
-                <p className="mt-3 text-gray-400 text-sm">Assigned to: <span className="text-white">{project.freelancerName}</span></p>
+                <div className="mt-4 pt-4 border-t border-white/[0.06] flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-accent-purple to-accent-blue flex items-center justify-center text-xs font-bold">
+                    {project.freelancerName.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">Assigned to</p>
+                    <p className="text-sm font-semibold text-white">{project.freelancerName}</p>
+                  </div>
+                </div>
               )}
             </div>
 
             {/* Submission Panel */}
-            <div className="bg-[#1B1F32] shadow-md rounded-lg p-6">
-              <h4 className="text-lg font-semibold text-purple-400">Submission</h4>
+            <div className="glass-card p-6">
+              <h4 className="text-lg font-semibold text-white mb-4">Submission</h4>
               {project.submission ? (
-                <div className="mt-4 space-y-3">
+                <div className="space-y-4">
                   <div>
-                    <h5 className="font-semibold">Project Link:</h5>
-                    <a href={project.projectLink} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline break-all">
+                    <p className="section-label mb-1">Project Link</p>
+                    <a href={project.projectLink} target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline text-sm break-all">
                       {project.projectLink}
                     </a>
                   </div>
                   {project.manualLink && (
                     <div>
-                      <h5 className="font-semibold">Documentation Link:</h5>
-                      <a href={project.manualLink} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline break-all">
+                      <p className="section-label mb-1">Documentation</p>
+                      <a href={project.manualLink} target="_blank" rel="noopener noreferrer" className="text-accent-blue hover:underline text-sm break-all">
                         {project.manualLink}
                       </a>
                     </div>
                   )}
                   <div>
-                    <h5 className="font-semibold">Description:</h5>
-                    <p className="text-gray-300">{project.submissionDescription}</p>
+                    <p className="section-label mb-1">Description</p>
+                    <p className="text-gray-400 text-sm">{project.submissionDescription}</p>
                   </div>
                   {project.submissionAccepted ? (
-                    <h5 className="text-green-400 font-semibold">✅ Project Completed!</h5>
+                    <div className="text-center py-4">
+                      <p className="text-4xl mb-2">✅</p>
+                      <p className="text-emerald-400 font-semibold">Project Completed!</p>
+                    </div>
                   ) : (
-                    <div className="flex gap-3 mt-4">
-                      <button
-                        className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition"
-                        onClick={handleApproveSubmission}
-                      >
+                    <div className="flex gap-3 pt-2">
+                      <button className="btn-emerald" onClick={handleApproveSubmission}>
                         Approve
                       </button>
-                      <button
-                        className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition"
-                        onClick={handleRejectSubmission}
-                      >
+                      <button className="btn-danger" onClick={handleRejectSubmission}>
                         Reject
                       </button>
                     </div>
                   )}
                 </div>
               ) : (
-                <p className="text-gray-400 mt-4">No submission yet from the freelancer.</p>
+                <div className="text-center py-8">
+                  <p className="text-4xl mb-2">📦</p>
+                  <p className="text-gray-500 text-sm">No submission yet from the freelancer.</p>
+                </div>
               )}
             </div>
           </div>
 
-          {/* Chat Section — WhatsApp style */}
-          <div className="mt-6 rounded-xl shadow-lg flex flex-col overflow-hidden border border-gray-700" style={{height: '520px', background: '#161b25'}}>
+          {/* Chat Section */}
+          <div className="glass-card mt-6 max-w-6xl mx-auto flex flex-col overflow-hidden" style={{height: '520px'}}>
             {/* Chat header */}
-            <div className="px-5 py-4 border-b border-gray-700 flex items-center gap-3" style={{background: '#1e2433'}}>
-              <div className="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-sm font-bold">F</div>
+            <div className="px-5 py-4 border-b border-white/[0.06] flex items-center gap-3 bg-surface-100">
+              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-accent-blue to-accent-cyan flex items-center justify-center text-sm font-bold">F</div>
               <div>
-                <h4 className="text-base font-semibold text-white leading-none">Chat with Freelancer</h4>
-                <p className="text-xs text-green-400 mt-0.5">
+                <h4 className="text-sm font-semibold text-white leading-none">Chat with Freelancer</h4>
+                <p className="text-xs text-emerald-400 mt-0.5">
                   {project.freelancerName || 'Freelancer'}
                 </p>
               </div>
@@ -226,32 +227,24 @@ const ProjectWorking = () => {
             {/* Messages */}
             <div
               id="client-chat-messages"
-              className="flex-1 overflow-y-auto px-4 py-3 space-y-1"
-              style={{background: '#0d1117'}}
+              className="flex-1 overflow-y-auto px-4 py-3 space-y-2 bg-surface"
             >
               {chats && chats.messages && chats.messages.length > 0 ? (
                 chats.messages.map((msg, index) => {
                   const isMe = msg.senderId === localStorage.getItem('userId');
-                  const senderLabel = isMe
-                    ? 'You'
-                    : (project?.freelancerName || 'Freelancer');
+                  const senderLabel = isMe ? 'You' : (project?.freelancerName || 'Freelancer');
                   return (
                     <div key={msg._id || msg.id || index} className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
-                      {/* Sender name above bubble */}
-                      <span className={`text-[10px] mb-0.5 font-semibold px-1 ${
-                        isMe ? 'text-blue-300' : 'text-gray-400'
-                      }`}>
+                      <span className={`text-[10px] mb-0.5 font-semibold px-1 ${isMe ? 'text-blue-300' : 'text-gray-500'}`}>
                         {senderLabel}
                       </span>
-                      <div
-                        className={`max-w-[70%] px-3 py-2 text-sm shadow ${
-                          isMe
-                            ? 'bg-[#1d4ed8] text-white rounded-t-2xl rounded-bl-2xl rounded-br-sm'
-                            : 'bg-[#1e2433] text-gray-100 rounded-t-2xl rounded-br-2xl rounded-bl-sm'
-                        }`}
-                      >
+                      <div className={`max-w-[70%] px-3.5 py-2.5 text-sm ${
+                        isMe
+                          ? 'bg-accent-blue/90 text-white rounded-t-2xl rounded-bl-2xl rounded-br-sm'
+                          : 'bg-surface-300 text-gray-100 rounded-t-2xl rounded-br-2xl rounded-bl-sm'
+                      }`}>
                         <p className="break-words leading-snug">{msg.text}</p>
-                        <p className={`text-[10px] mt-1 text-right ${isMe ? 'text-blue-200' : 'text-gray-400'}`}>
+                        <p className={`text-[10px] mt-1 text-right ${isMe ? 'text-blue-200' : 'text-gray-500'}`}>
                           {new Date(msg.time).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}
                         </p>
                       </div>
@@ -259,20 +252,19 @@ const ProjectWorking = () => {
                   );
                 })
               ) : (
-                <div className="flex flex-col items-center justify-center h-full gap-2 text-gray-500">
+                <div className="flex flex-col items-center justify-center h-full gap-2 text-gray-600">
                   <p className="text-4xl">💬</p>
                   <p className="text-sm">No messages yet. Start the conversation!</p>
                 </div>
               )}
-              {/* Scroll anchor */}
               <div ref={chatEndRef} />
             </div>
 
             {/* Input bar */}
-            <div className="px-4 py-3 border-t border-gray-700 flex items-center gap-2" style={{background: '#1e2433'}}>
+            <div className="px-4 py-3 border-t border-white/[0.06] flex items-center gap-2 bg-surface-50">
               <input
                 type="text"
-                className="flex-1 bg-[#0d1117] text-white text-sm px-4 py-2.5 rounded-full outline-none border border-gray-600 focus:border-blue-500 transition placeholder-gray-500"
+                className="flex-1 bg-surface-200 text-white text-sm px-4 py-2.5 rounded-full outline-none border border-white/[0.06] focus:border-accent-blue/50 transition placeholder-gray-600"
                 placeholder="Type a message..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
@@ -281,7 +273,7 @@ const ProjectWorking = () => {
               <button
                 onClick={handleMessageSend}
                 disabled={!message.trim()}
-                className="w-10 h-10 flex items-center justify-center bg-blue-600 hover:bg-blue-700 disabled:opacity-40 rounded-full transition flex-shrink-0"
+                className="w-10 h-10 flex items-center justify-center bg-accent-blue hover:bg-blue-600 disabled:opacity-30 rounded-full transition flex-shrink-0"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 text-white rotate-45">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12zm0 0h7.5" />
@@ -290,10 +282,9 @@ const ProjectWorking = () => {
             </div>
           </div>
         </div>
-
       ) : (
-        <div className="p-6 bg-gray-900 min-h-screen text-white flex items-center justify-center">
-          <p>Project not found or error loading project.</p>
+        <div className="p-6 bg-surface min-h-screen text-white flex items-center justify-center">
+          <p className="text-gray-500">Project not found or error loading project.</p>
         </div>
       )}
     </>

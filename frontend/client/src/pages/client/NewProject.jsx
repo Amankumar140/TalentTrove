@@ -37,58 +37,64 @@ const NewProject = () => {
   };
 
   return (
-    <div className="bg-gray-900 text-white min-h-screen flex flex-col items-center p-6">
-      <h3 className="text-2xl font-bold text-blue-400 mb-6">Post New Project</h3>
-      <div className="bg-gray-800 p-6 rounded-xl shadow-lg w-full max-w-2xl space-y-4">
-        <div>
-          <label className="block text-gray-400 mb-1">Project Title *</label>
-          <input
-            type="text"
-            className="w-full p-2 rounded-md bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="e.g. Build a React E-commerce Site"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-        </div>
-        <div>
-          <label className="block text-gray-400 mb-1">Description *</label>
-          <textarea
-            className="w-full p-2 rounded-md bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Describe what you need done in detail"
-            rows={5}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </div>
-        <div className="flex gap-4">
-          <div className="w-1/2">
-            <label className="block text-gray-400 mb-1">Budget ($) *</label>
-            <input
-              type="number"
-              className="w-full p-2 rounded-md bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="e.g. 500"
-              value={budget}
-              onChange={(e) => setBudget(e.target.value)}
-            />
-          </div>
-          <div className="w-1/2">
-            <label className="block text-gray-400 mb-1">Required Skills *</label>
+    <div className="bg-surface text-white min-h-screen flex flex-col items-center p-6 animate-fade-in">
+      <div className="w-full max-w-2xl">
+        <h3 className="page-title mb-8">Post New Project</h3>
+
+        <div className="glass-card p-6 md:p-8 space-y-5">
+          <div>
+            <label className="section-label mb-2 block">Project Title *</label>
             <input
               type="text"
-              className="w-full p-2 rounded-md bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="React, Node.js, MongoDB"
-              value={skills}
-              onChange={(e) => setSkills(e.target.value)}
+              className="form-input"
+              placeholder="e.g. Build a React E-commerce Site"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
             />
           </div>
+
+          <div>
+            <label className="section-label mb-2 block">Description *</label>
+            <textarea
+              className="form-input resize-none"
+              placeholder="Describe what you need done in detail"
+              rows={5}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="section-label mb-2 block">Budget ($) *</label>
+              <input
+                type="number"
+                className="form-input"
+                placeholder="e.g. 500"
+                value={budget}
+                onChange={(e) => setBudget(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="section-label mb-2 block">Required Skills *</label>
+              <input
+                type="text"
+                className="form-input"
+                placeholder="React, Node.js, MongoDB"
+                value={skills}
+                onChange={(e) => setSkills(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <button
+            className="btn-blue w-full mt-2 disabled:opacity-50"
+            onClick={handleSubmit}
+            disabled={loading}
+          >
+            {loading ? 'Posting...' : 'Post Project'}
+          </button>
         </div>
-        <button
-          className="w-full mt-2 bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-md transition disabled:opacity-50"
-          onClick={handleSubmit}
-          disabled={loading}
-        >
-          {loading ? 'Posting...' : 'Post Project'}
-        </button>
       </div>
     </div>
   );

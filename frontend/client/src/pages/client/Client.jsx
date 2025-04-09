@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../context/GeneralContext';
+import { FaPlus } from 'react-icons/fa';
 
 const Client = () => {
   const navigate = useNavigate();
@@ -36,70 +37,71 @@ const Client = () => {
     }
   };
 
-  const statusColor = {
-    Available: 'text-green-400',
-    Assigned:  'text-yellow-400',
-    Completed: 'text-blue-400',
+  const statusClass = {
+    Available: 'status-available',
+    Assigned:  'status-assigned',
+    Completed: 'status-completed',
   };
 
   return (
-    <div className="bg-gray-900 text-white min-h-screen p-6">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-center mb-6">
-          <h3 className="text-2xl font-bold text-blue-400">My Projects</h3>
-          <div className="flex gap-3 mt-3 md:mt-0">
+    <div className="bg-surface text-white min-h-screen p-6 animate-fade-in">
+      <div className="max-w-5xl mx-auto">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+          <h3 className="page-title">My Projects</h3>
+          <div className="flex gap-3">
             <select
-              className="border border-gray-700 rounded-md p-2 bg-gray-800 text-white focus:outline-none"
+              className="form-input w-auto min-w-[160px] cursor-pointer"
               onChange={(e) => handleFilterChange(e.target.value)}
             >
-              <option value="">All Statuses</option>
-              <option value="Un Assigned">Unassigned</option>
-              <option value="In Progress">In Progress</option>
-              <option value="Completed">Completed</option>
+              <option value="" className="bg-surface-200">All Statuses</option>
+              <option value="Un Assigned" className="bg-surface-200">Unassigned</option>
+              <option value="In Progress" className="bg-surface-200">In Progress</option>
+              <option value="Completed" className="bg-surface-200">Completed</option>
             </select>
             <button
-              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition"
+              className="btn-blue flex items-center gap-2"
               onClick={() => navigate('/new-project')}
             >
-              + New Project
+              <FaPlus className="text-xs" /> New Project
             </button>
           </div>
         </div>
-        <hr className="mb-4 border-gray-700" />
+
         {displayProjects.length === 0 ? (
-          <div className="text-center py-12">
+          <div className="glass-card p-16 text-center">
+            <p className="text-4xl mb-4">📋</p>
             <p className="text-gray-400 text-lg">No projects yet.</p>
             <button
-              className="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-md transition"
+              className="btn-blue mt-6 inline-flex items-center gap-2"
               onClick={() => navigate('/new-project')}
             >
-              Post Your First Project
+              <FaPlus className="text-xs" /> Post Your First Project
             </button>
           </div>
         ) : (
-          displayProjects.map((project) => (
-            <div
-              key={project._id}
-              className="bg-gray-800 p-4 rounded-lg shadow-md mb-3 cursor-pointer hover:bg-gray-700 transition"
-              onClick={() => navigate(`/client-project/${project._id}`)}
-            >
-              <div className="flex justify-between items-center">
-                <h3 className="text-xl font-semibold text-blue-300">{project.title}</h3>
-                <p className="text-gray-500 text-sm">{new Date(project.postedDate).toLocaleDateString()}</p>
-              </div>
-              <h5 className="text-lg font-medium text-blue-400 mt-2">Budget — ${project.budget}</h5>
-              <p className="text-gray-400 mt-2">{project.description}</p>
-              <div className="mt-3 flex justify-between items-center text-sm">
-                <span>
-                  Status:{' '}
-                  <span className={`font-semibold ${statusColor[project.status] || 'text-white'}`}>
+          <div className="space-y-4">
+            {displayProjects.map((project, i) => (
+              <div
+                key={project._id}
+                className="project-card animate-slide-up"
+                style={{animationDelay: `${i * 0.05}s`}}
+                onClick={() => navigate(`/client-project/${project._id}`)}
+              >
+                <div className="flex justify-between items-start">
+                  <h3 className="text-lg font-semibold text-white">{project.title}</h3>
+                  <span className="text-xs text-gray-500">{new Date(project.postedDate).toLocaleDateString()}</span>
+                </div>
+                <p className="text-accent-blue font-semibold mt-2">Budget: ${project.budget}</p>
+                <p className="text-gray-400 text-sm mt-2 line-clamp-2">{project.description}</p>
+                <div className="mt-4 flex items-center justify-between">
+                  <span className={statusClass[project.status] || 'status-available'}>
                     {project.status}
                   </span>
-                </span>
-                <span className="text-gray-500">{project.bids.length} bids</span>
+                  <span className="text-xs text-gray-500">{project.bids.length} bid{project.bids.length !== 1 ? 's' : ''}</span>
+                </div>
               </div>
-            </div>
-          ))
+            ))}
+          </div>
         )}
       </div>
     </div>
