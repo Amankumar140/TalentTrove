@@ -17,42 +17,50 @@ const AllApplications = () => {
     }
   };
 
-  const statusColor = {
-    Pending:  'bg-yellow-700 text-yellow-100',
-    Accepted: 'bg-green-700 text-green-100',
-    Rejected: 'bg-red-800 text-red-100',
+  const statusClass = {
+    Pending:  'status-pending',
+    Accepted: 'status-accepted',
+    Rejected: 'status-rejected',
   };
 
   return (
-    <div className="bg-[#101214] text-white min-h-screen p-6">
-      <h3 className="text-lg font-semibold text-blue-400 mb-2">All Applications ({applications.length})</h3>
-      <hr className="mb-4 border-gray-700" />
-      <div className="grid gap-4">
-        {applications.map((application) => (
-          <div key={application._id} className="bg-[#2e3434] p-6 rounded-2xl shadow-lg">
-            <div className="flex justify-between items-start">
-              <h3 className="text-xl font-bold text-white">{application.title}</h3>
-              <span className={`text-xs px-2 py-1 rounded ${statusColor[application.status] || 'bg-gray-600'}`}>
-                {application.status}
-              </span>
-            </div>
-            <p className="text-gray-300 mt-2">{application.description}</p>
-            <div className="mt-2">
-              <h5 className="text-sm font-medium text-blue-200">Skills Required:</h5>
-              <div className="flex flex-wrap gap-2 mt-1">
-                {application.requiredSkills.map((skill) => (
-                  <span key={skill} className="bg-blue-900 text-blue-200 px-3 py-1 rounded-lg text-sm">{skill}</span>
-                ))}
+    <div className="bg-surface text-white min-h-screen p-6 animate-fade-in">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="page-title">All Applications</h3>
+          <span className="text-sm text-gray-500">{applications.length} total</span>
+        </div>
+        <div className="space-y-4">
+          {applications.map((application, i) => (
+            <div key={application._id} className="glass-card p-6 animate-slide-up" style={{animationDelay: `${i * 0.03}s`}}>
+              <div className="flex items-start justify-between mb-2">
+                <h3 className="text-lg font-semibold text-white">{application.title}</h3>
+                <span className={statusClass[application.status] || 'status-pending'}>
+                  {application.status}
+                </span>
+              </div>
+              <p className="text-gray-400 text-sm">{application.description}</p>
+              <div className="mt-3">
+                <p className="section-label mb-2">Required Skills</p>
+                <div className="flex flex-wrap gap-2">
+                  {application.requiredSkills.map((skill) => (
+                    <span key={skill} className="skill-pill">{skill}</span>
+                  ))}
+                </div>
+              </div>
+              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                <div className="space-y-1">
+                  <p className="text-gray-500">Budget: <span className="text-accent-blue font-semibold">${application.budget}</span></p>
+                  <p className="text-gray-500">Bid: <span className="text-emerald-400 font-semibold">${application.bidAmount}</span> · {application.estimatedTime} days</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-gray-500">Client: <span className="text-white">{application.clientName}</span></p>
+                  <p className="text-gray-500">Freelancer: <span className="text-white">{application.freelancerName}</span></p>
+                </div>
               </div>
             </div>
-            <div className="mt-2 text-sm text-gray-300">
-              <p>Budget: ${application.budget}</p>
-              <p>Bid: ${application.bidAmount} · {application.estimatedTime} days</p>
-              <p>Client: {application.clientName} ({application.clientEmail})</p>
-              <p>Freelancer: {application.freelancerName} ({application.freelancerEmail})</p>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

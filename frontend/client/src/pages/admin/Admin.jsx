@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../context/GeneralContext';
+import { FaProjectDiagram, FaCheckCircle, FaFileAlt, FaUsers } from 'react-icons/fa';
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -16,7 +17,6 @@ const Admin = () => {
     fetchUsers();
   }, []);
 
-  // FIX: was using process.env.REACT_APP_API_BASE_URL (CRA syntax) in a Vite project
   const fetchProjects = async () => {
     try {
       const response = await api.get('/fetch-projects');
@@ -27,7 +27,6 @@ const Admin = () => {
     }
   };
 
-  // FIX: was using process.env.REACT_APP_API_BASE_URL
   const fetchApplications = async () => {
     try {
       const response = await api.get('/fetch-applications');
@@ -37,7 +36,6 @@ const Admin = () => {
     }
   };
 
-  // FIX: was broken multi-line template literal
   const fetchUsers = async () => {
     try {
       const response = await api.get('/fetch-users');
@@ -48,28 +46,34 @@ const Admin = () => {
   };
 
   const stats = [
-    { title: 'All Projects',       count: projectsCount,      nav: '/admin-projects'     },
-    { title: 'Completed Projects', count: completedProsCount,  nav: '/admin-projects'     },
-    { title: 'Applications',       count: applicationsCount,   nav: '/admin-applications' },
-    { title: 'Users',              count: usersCount,           nav: '/all-users'          },
+    { title: 'All Projects', count: projectsCount, nav: '/admin-projects', icon: <FaProjectDiagram />, color: 'from-purple-500 to-indigo-600' },
+    { title: 'Completed', count: completedProsCount, nav: '/admin-projects', icon: <FaCheckCircle />, color: 'from-emerald-500 to-teal-600' },
+    { title: 'Applications', count: applicationsCount, nav: '/admin-applications', icon: <FaFileAlt />, color: 'from-blue-500 to-cyan-600' },
+    { title: 'Users', count: usersCount, nav: '/all-users', icon: <FaUsers />, color: 'from-amber-500 to-orange-600' },
   ];
 
   return (
-    <div className="bg-[#101214] text-white min-h-screen p-6">
-      <h3 className="text-2xl font-bold mb-6 text-blue-300">Admin Dashboard</h3>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((item, index) => (
-          <div key={index} className="bg-[#2e3439] p-6 rounded-2xl shadow-lg text-center">
-            <h4 className="text-lg font-semibold text-[#8cbaeb]">{item.title}</h4>
-            <p className="text-3xl font-bold my-3 text-white">{item.count}</p>
-            <button
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+    <div className="bg-surface text-white min-h-screen p-6 animate-fade-in">
+      <div className="max-w-6xl mx-auto">
+        <h3 className="page-title mb-8">Admin Dashboard</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {stats.map((item, index) => (
+            <div
+              key={index}
+              className="stat-card group cursor-pointer"
               onClick={() => navigate(item.nav)}
             >
-              View {item.title}
-            </button>
-          </div>
-        ))}
+              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${item.color} flex items-center justify-center text-white text-sm mb-3 mx-auto`}>
+                {item.icon}
+              </div>
+              <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">{item.title}</p>
+              <p className="text-3xl font-bold mt-1 text-white">{item.count}</p>
+              <p className="text-xs text-accent-blue mt-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                View Details →
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
