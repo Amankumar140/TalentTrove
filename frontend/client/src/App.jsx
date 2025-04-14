@@ -6,6 +6,8 @@ import Navbar from "./components/Navbar";
 import GeneralContextProvider from "./context/GeneralContext";
 import Landing from "./pages/Landing";
 import Authenticate from "./pages/Authenticate";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
 import Freelancer from "./pages/freelancer/Freelancer";
 import AllProjects from "./pages/freelancer/AllProjects";
 import MyProjects from "./pages/freelancer/MyProject";
@@ -29,6 +31,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/authenticate" element={<Authenticate />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="/freelancer" element={<Freelancer />} />
           <Route path="/all-projects" element={<AllProjects />} />
           <Route path="/my-projects" element={<MyProjects />} />
