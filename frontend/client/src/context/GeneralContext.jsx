@@ -2,6 +2,7 @@ import React, { createContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
+import { useToast } from "../components/Toast";
 
 export const GeneralContext = createContext();
 
@@ -23,6 +24,7 @@ const GeneralContextProvider = ({ children }) => {
   const WS = import.meta.env.VITE_API_BASE_URL;
 
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const [socket, setSocket] = useState(null);
   const [username, setUsername] = useState("");
@@ -60,6 +62,10 @@ const GeneralContextProvider = ({ children }) => {
   }, []);
 
   const login = async () => {
+    if (!email || !password) {
+      showToast("Please enter both email and password.", "warning");
+      return;
+    }
     try {
       const res = await axios.post(`${WS}/login`, { email, password });
 
@@ -71,6 +77,8 @@ const GeneralContextProvider = ({ children }) => {
       localStorage.setItem("username", user.username);
       localStorage.setItem("email", user.email);
 
+      showToast(`Welcome back, ${user.username}!`, "success");
+
       navigate(
         user.usertype === "freelancer"
           ? "/freelancer"
@@ -81,12 +89,17 @@ const GeneralContextProvider = ({ children }) => {
           : "/"
       );
     } catch (err) {
-      alert("Login failed!!");
+      const msg = err.response?.data?.message || err.response?.data?.error || "Invalid email or password. Please try again.";
+      showToast(msg, "error");
       console.error("Login error:", err);
     }
   };
 
   const register = async () => {
+    if (!username || !email || !password || !usertype) {
+      showToast("Please fill in all fields to create your account.", "warning");
+      return;
+    }
     try {
       const res = await axios.post(`${WS}/register`, {
         username,
@@ -103,6 +116,8 @@ const GeneralContextProvider = ({ children }) => {
       localStorage.setItem("username", user.username);
       localStorage.setItem("email", user.email);
 
+      showToast(`Account created! Welcome, ${user.username}.`, "success");
+
       navigate(
         user.usertype === "freelancer"
           ? "/freelancer"
@@ -113,13 +128,15 @@ const GeneralContextProvider = ({ children }) => {
           : "/"
       );
     } catch (err) {
-      alert("Registration failed!!");
+      const msg = err.response?.data?.message || err.response?.data?.error || "Registration failed. Email may already be in use.";
+      showToast(msg, "error");
       console.error("Registration error:", err);
     }
   };
 
   const logout = () => {
     localStorage.clear();
+    showToast("You've been logged out.", "info");
     navigate("/");
   };
 

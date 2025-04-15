@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../context/GeneralContext';
+import { useToast } from '../../components/Toast';
 
 const NewProject = () => {
   const [title, setTitle] = useState('');
@@ -10,10 +11,11 @@ const NewProject = () => {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const handleSubmit = async () => {
     if (!title || !description || !budget || !skills) {
-      alert('Please fill in all fields');
+      showToast('Please fill in all fields before posting.', 'warning');
       return;
     }
     setLoading(true);
@@ -27,10 +29,10 @@ const NewProject = () => {
         clientName:  localStorage.getItem('username'),
         clientEmail: localStorage.getItem('email'),
       });
-      alert('New project posted successfully!');
+      showToast('Project posted successfully!', 'success');
       navigate('/client');
     } catch {
-      alert('Failed to post project. Please try again.');
+      showToast('Failed to post project. Please try again.', 'error');
     } finally {
       setLoading(false);
     }

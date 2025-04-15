@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../../context/GeneralContext';
+import { useToast } from '../../components/Toast';
 import { FaProjectDiagram, FaCheckCircle, FaFileAlt, FaDollarSign } from 'react-icons/fa';
 
 const Freelancer = () => {
   const [isDataUpdateOpen, setIsDataUpdateOpen] = useState(false);
   const navigate = useNavigate();
+  const { showToast } = useToast();
   const [freelancerData, setFreelancerData] = useState(null);
   const [skills, setSkills] = useState([]);
   const [description, setDescription] = useState('');
@@ -45,7 +47,7 @@ const Freelancer = () => {
         updateSkills,
         description: updateDescription,
       });
-      alert('Profile updated successfully!');
+      showToast('Profile updated successfully!', 'success');
       setFreelancerData(response.data);
       setSkills(response.data.skills || []);
       setDescription(response.data.description || '');
@@ -54,7 +56,7 @@ const Freelancer = () => {
       setIsDataUpdateOpen(false);
     } catch (error) {
       console.error('Update Error:', error);
-      alert('Failed to update profile. Please try again.');
+      showToast('Failed to update profile. Please try again.', 'error');
     }
   };
 

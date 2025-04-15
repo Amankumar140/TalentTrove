@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { GeneralContext, api } from '../../context/GeneralContext';
+import { useToast } from '../../components/Toast';
 
 const ProjectWorking = () => {
   const { socket } = useContext(GeneralContext);
@@ -10,6 +11,7 @@ const ProjectWorking = () => {
   const [chats, setChats] = useState({ messages: [] });
   const [loading, setLoading] = useState(true);
   const chatEndRef = useRef(null);
+  const { showToast } = useToast();
 
   useEffect(() => {
     fetchProject(params.id);
@@ -75,22 +77,22 @@ const ProjectWorking = () => {
   const handleApproveSubmission = async () => {
     try {
       await api.get(`/approve-submission/${params.id}`);
-      alert('Submission approved!');
+      showToast('Submission approved! Project marked as completed.', 'success');
       fetchProject(params.id);
     } catch (err) {
       console.error(err);
-      alert('Failed to approve submission.');
+      showToast('Failed to approve submission.', 'error');
     }
   };
 
   const handleRejectSubmission = async () => {
     try {
       await api.get(`/reject-submission/${params.id}`);
-      alert('Submission rejected!');
+      showToast('Submission rejected. The freelancer has been notified.', 'warning');
       fetchProject(params.id);
     } catch (err) {
       console.error(err);
-      alert('Failed to reject submission.');
+      showToast('Failed to reject submission.', 'error');
     }
   };
 

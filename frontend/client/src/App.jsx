@@ -3,6 +3,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Navbar from "./components/Navbar";
+import { ToastProvider } from "./components/Toast";
 import GeneralContextProvider from "./context/GeneralContext";
 import Landing from "./pages/Landing";
 import Authenticate from "./pages/Authenticate";
@@ -26,6 +27,7 @@ import AdminProjects from "./pages/admin/AdminProjects";
 function App() {
   return (
     <Router>
+      <ToastProvider>
       <GeneralContextProvider>
         <Navbar />
         <Routes>
@@ -48,6 +50,7 @@ function App() {
           <Route path="/all-users" element={<AllUsers />} />
         </Routes>
       </GeneralContextProvider>
+      </ToastProvider>
     </Router>
   );
 }

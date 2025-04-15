@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../../context/GeneralContext';
+import { useToast } from '../../components/Toast';
 
 const ProjectApplications = () => {
   const [applications, setApplications] = useState([]);
   const [displayApplications, setDisplayApplications] = useState([]);
   const [projectTitles, setProjectTitles] = useState([]);
+  const { showToast } = useToast();
 
   useEffect(() => {
     fetchApplications();
@@ -32,20 +34,20 @@ const ProjectApplications = () => {
     if (!window.confirm('Approve this application? Other bids will be rejected.')) return;
     try {
       await api.get(`/approve-application/${id}`);
-      alert('Application approved!');
+      showToast('Application approved! The freelancer has been assigned.', 'success');
       fetchApplications();
     } catch (err) {
-      alert('Operation failed!');
+      showToast('Failed to approve application. Please try again.', 'error');
     }
   };
 
   const handleReject = async (id) => {
     try {
       await api.get(`/reject-application/${id}`);
-      alert('Application rejected.');
+      showToast('Application declined.', 'info');
       fetchApplications();
     } catch (err) {
-      alert('Operation failed!');
+      showToast('Failed to decline application. Please try again.', 'error');
     }
   };
 

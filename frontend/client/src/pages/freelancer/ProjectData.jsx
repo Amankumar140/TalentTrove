@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { GeneralContext, api } from '../../context/GeneralContext';
+import { useToast } from '../../components/Toast';
 
 const ProjectData = () => {
   const { socket } = useContext(GeneralContext);
@@ -19,6 +20,7 @@ const ProjectData = () => {
   const [chats, setChats] = useState({ messages: [] });
   const [loading, setLoading] = useState(true);
   const chatEndRef = useRef(null);
+  const { showToast } = useToast();
 
   useEffect(() => {
     const load = async () => {
@@ -109,10 +111,10 @@ const ProjectData = () => {
       setProposal('');
       setBidAmount(0);
       setEstimatedTime('');
-      alert('Bidding successful!!');
+      showToast('Bid submitted successfully!', 'success');
       await fetchProject(params.id);
     } catch (err) {
-      alert('Bidding failed!! Try again!');
+      showToast('Failed to submit bid. Please try again.', 'error');
       console.error('Bidding error:', err);
     }
   };
@@ -130,10 +132,10 @@ const ProjectData = () => {
       setProjectLink('');
       setManualLink('');
       setSubmissionDescription('');
-      alert('Submission successful!!');
+      showToast('Project submitted for review!', 'success');
       await fetchProject(params.id);
     } catch (err) {
-      alert('Submission failed!! Try again!');
+      showToast('Submission failed. Please try again.', 'error');
       console.error('Submission error:', err);
     }
   };
