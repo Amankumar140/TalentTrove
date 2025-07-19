@@ -11,7 +11,8 @@ const MyApplications = () => {
 
   const fetchApplications = async () => {
     try {
-      const response = await axios.get("http://localhost:6001/fetch-applications");
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}
+/fetch-applications`);
       setApplications(response.data.reverse());
     } catch (err) {
       console.error(err);

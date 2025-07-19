@@ -11,7 +11,8 @@ const AllUsers = () => {
 
   const fetchUsers = async () => {
     await axios
-      .get("http://localhost:6001/fetch-users")
+      .get(`${import.meta.env.VITE_API_BASE_URL}
+/fetch-users`)
       .then((response) => {
         setUsers(response.data);
       })

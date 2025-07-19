@@ -23,7 +23,8 @@ const Freelancer = () => {
 
   const fetchUserData = async (id) => {
     axios
-      .get(`http://localhost:6001/fetch-freelancer/${id}`)
+      .get(`${import.meta.env.VITE_API_BASE_URL}
+/fetch-freelancer/${id}`)
       .then((response) => {
         setFreelancerData(response.data);
         if (response.data) {
@@ -41,7 +42,8 @@ const Freelancer = () => {
   
   const updateUserData = async () => {
     try {
-      const response = await axios.post("http://localhost:6001/update-freelancer", {
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}
+/update-freelancer`, {
         freelancerId,
         updateSkills,
         description: updateDescription,
@@ -67,7 +69,8 @@ const Freelancer = () => {
 
   const fetchApplications = async () => {
     await axios
-      .get("http://localhost:6001/fetch-applications")
+      .get(`${import.meta.env.VITE_API_BASE_URL}
+/fetch-applications`)
       .then((response) => {
         setApplicationsCount(
           response.data.filter(

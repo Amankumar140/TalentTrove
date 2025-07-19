@@ -18,7 +18,8 @@ const AllProjects = () => {
 
   const fetchProjects = async () => {
     try {
-      const response = await axios.get('http://localhost:6001/fetch-projects');
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}
+/fetch-projects`);
       setProjects(response.data);
       setDisplayProjects(response.data.reverse());
 

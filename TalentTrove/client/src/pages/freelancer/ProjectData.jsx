@@ -69,7 +69,7 @@ const ProjectData = () => {
 
   const fetchProject = async (id) => {
     try {
-      const response = await axios.get(`http://localhost:6001/fetch-project/${id}`);
+      const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/fetch-project/${id}`);
       setProject(response.data);
       setProjectId(response.data._id);
       setClientId(response.data.clientId);
@@ -82,7 +82,7 @@ const ProjectData = () => {
 
   const fetchChats = async () => {
     try {
-      const response = await axios.get(`http://localhost:6001/fetch-chats/${params.id}`);
+      const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/fetch-chats/${params.id}`);
       if (response.data && Array.isArray(response.data.messages)) {
         setChats(response.data);
       } else {
@@ -100,7 +100,8 @@ const ProjectData = () => {
 
   const handleBidding = async () => {
     try {
-      await axios.post("http://localhost:6001/make-bid", { 
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL}
+/make-bid`, { 
         clientId, 
         freelancerId, 
         projectId, 
@@ -124,7 +125,8 @@ const ProjectData = () => {
 
   const handleProjectSubmission = async () => {
     try {
-      await axios.post("http://localhost:6001/submit-project", { 
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL}
+/submit-project`, { 
         clientId, 
         freelancerId, 
         projectId, 

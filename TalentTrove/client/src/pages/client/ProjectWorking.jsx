@@ -37,7 +37,8 @@ const ProjectWorking = () => {
   const fetchProject = async (id) => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:6001/fetch-project/${id}`);
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}
+/fetch-project/${id}`);
       setProject(response.data);
       setProjectId(response.data._id);
       setClientId(response.data.clientId);
@@ -52,7 +53,8 @@ const ProjectWorking = () => {
 
   const fetchChats = async () => {
     try {
-      const response = await axios.get(`http://localhost:6001/fetch-chats/${params['id']}`);
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}
+/fetch-chats/${params['id']}`);
       if (response.data && response.data.messages) {
         setChats(response.data);
       } else {
@@ -66,7 +68,8 @@ const ProjectWorking = () => {
 
   const handleApproveSubmission = async () => {
     try {
-      await axios.get(`http://localhost:6001/approve-submission/${params['id']}`);
+      await axios.get(`${import.meta.env.VITE_API_BASE_URL}
+/approve-submission/${params['id']}`);
       fetchProject(params['id']);
       alert("Submission approved!");
     } catch (err) {
@@ -77,7 +80,8 @@ const ProjectWorking = () => {
 
   const handleRejectSubmission = async () => {
     try {
-      await axios.get(`http://localhost:6001/reject-submission/${params['id']}`);
+      await axios.get(`${import.meta.env.VITE_API_BASE_URL}
+/reject-submission/${params['id']}`);
       fetchProject(params['id']);
       alert("Submission rejected!");
     } catch (err) {

@@ -14,7 +14,8 @@ const NewProject = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
-    await axios.post("http://localhost:6001/new-project", {
+    await axios.post(`${import.meta.env.VITE_API_BASE_URL}
+/new-project`, {
       title,
       description,
       budget,

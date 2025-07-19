@@ -11,6 +11,14 @@ import SocketHandler from './SocketHandler.js';
 
 const app = express();
 
+
+import dotenv from 'dotenv';
+dotenv.config();
+
+const PORT = process.env.PORT || 6001;
+
+
+
 app.use(express.json());
 app.use(bodyParser.json({limit: "30mb", extended: true}))
 app.use(bodyParser.urlencoded({limit: "30mb", extended: true}));
@@ -33,9 +41,9 @@ io.on("connection", (socket) =>{
 })
 
 
-const PORT = 6001;
+ 
 
-mongoose.connect("mongodb+srv://@freelancing.g8xvg.mongodb.net/?retryWrites=true&w=majority&appName=freelancing",{
+mongoose.connect(process.env.MONGO_URI,{
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(()=>{

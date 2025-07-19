@@ -12,7 +12,8 @@ const AllApplications = () => {
   }, []);
 
   const fetchApplications = async () => {
-    await axios.get('http://localhost:6001/fetch-applications')
+    await axios.get(`${import.meta.env.VITE_API_BASE_URL}
+/fetch-applications`)
       .then(response => {
         setApplications(response.data.reverse());
       })
