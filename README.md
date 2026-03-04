@@ -108,7 +108,7 @@ TalentTrove/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/Amankumar1440/TalentTrove.git
+git clone https://github.com/Amankumar140/TalentTrove.git
 cd TalentTrove
 ```
 
@@ -166,20 +166,8 @@ http://localhost:5173
 
 ---
 
-## 🔐 Authentication Flow
 
-```
-┌─────────┐     POST /register or /login      ┌─────────┐
-│         │ ──────────────────────────────────► │         │
-│ Client  │                                    │ Server  │
-│  (React)│ ◄────────────────────────────────── │(Express)│
-│         │     { user, token }                │         │
-└─────────┘                                    └─────────┘
-     │                                              ▲
-     │  Authorization: Bearer <token>               │
-     └──────────────────────────────────────────────┘
-              All subsequent requests
-```
+ 
 
 - **Register/Login** returns `{ user, token }` — token is a JWT (7-day expiry)
 - **Protected routes** require `Authorization: Bearer <token>` header
@@ -195,13 +183,13 @@ http://localhost:5173
 | `POST` | `/register` | Register a new user |
 | `POST` | `/login` | Login with email & password |
 
-### Freelancers (Protected 🔒)
+### Freelancers (Protected )
 | Method | Endpoint | Description |
 |---|---|---|
 | `GET` | `/fetch-freelancer/:id` | Get freelancer profile by user ID |
 | `POST` | `/update-freelancer` | Update skills & description |
 
-### Projects (Protected 🔒)
+### Projects (Protected )
 | Method | Endpoint | Description |
 |---|---|---|
 | `GET` | `/fetch-projects` | List all projects |
@@ -211,7 +199,7 @@ http://localhost:5173
 | `GET` | `/approve-submission/:id` | Approve a submission |
 | `GET` | `/reject-submission/:id` | Reject a submission |
 
-### Applications (Protected 🔒)
+### Applications (Protected )
 | Method | Endpoint | Description |
 |---|---|---|
 | `POST` | `/make-bid` | Place a bid on a project |
@@ -219,12 +207,12 @@ http://localhost:5173
 | `GET` | `/approve-application/:id` | Approve an application |
 | `GET` | `/reject-application/:id` | Reject an application |
 
-### Users (Protected 🔒)
+### Users (Protected )
 | Method | Endpoint | Description |
 |---|---|---|
 | `GET` | `/fetch-users` | List all users (no passwords) |
 
-### Chat (Protected 🔒)
+### Chat (Protected )
 | Method | Endpoint | Description |
 |---|---|---|
 | `GET` | `/fetch-chats/:id` | Get chat messages by project ID |
@@ -262,6 +250,4 @@ http://localhost:5173
 
 ---
 
-## 📝 License
 
-This project is licensed under the ISC License.
