@@ -13,6 +13,15 @@ Built with **React + Vite** · **Node.js + Express** · **MongoDB** · **Socket.
 [![Socket.IO](https://img.shields.io/badge/Socket.IO-4.x-010101?logo=socketdotio&logoColor=white)](https://socket.io/)
 [![JWT](https://img.shields.io/badge/Auth-JWT-FB015B?logo=jsonwebtokens&logoColor=white)](https://jwt.io/)
 
+### 🌐 Live Demo
+
+| | URL |
+|---|---|
+| **🖥️ Frontend** | [talenttrove.vercel.app](https://talenttrove.vercel.app) |
+| **⚙️ Backend API** | [talenttrove-2tu5.onrender.com](https://talenttrove-2tu5.onrender.com) |
+
+> **Note:** The backend is hosted on Render's free tier and may take ~30 seconds to wake up on the first request after inactivity.
+
 </div>
 
 ---
