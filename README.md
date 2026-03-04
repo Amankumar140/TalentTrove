@@ -1,4 +1,4 @@
-<![CDATA[<div align="center">
+<div align="center">
 
 # 🏆 TalentTrove
 
@@ -23,7 +23,7 @@ Built with **React + Vite** · **Node.js + Express** · **MongoDB** · **Socket.
 |---|---|
 | 🖥️ **Role-Based Dashboards** | Separate views for freelancers, clients, and admins |
 | 💰 **Secure Bidding System** | Submit proposals with bid amounts and estimated timelines |
-| � **JWT Authentication** | Token-based auth with bcrypt password hashing |
+| 🔐 **JWT Authentication** | Token-based auth with bcrypt password hashing |
 | 💬 **Real-Time Chat** | Socket.IO powered messaging between clients and freelancers |
 | 📦 **Project Delivery** | Submit and review project deliverables with approval workflow |
 | 📁 **Portfolio Management** | Freelancers can showcase their skills and work description |
@@ -99,7 +99,7 @@ TalentTrove/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/TalentTrove.git
+git clone https://github.com/Amankumar1440/TalentTrove.git
 cd TalentTrove
 ```
 
@@ -256,4 +256,3 @@ http://localhost:5173
 ## 📝 License
 
 This project is licensed under the ISC License.
-]]>
